@@ -1,0 +1,6 @@
+@VectorNotes.Server_HostAddress = http://localhost:5128
+
+GET {{VectorNotes.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
