@@ -1,12 +1,16 @@
-﻿:host {
+:host {
     max-width: 1280px;
     padding: 2rem;
     text-align: center;
 }
 
+@mixin som {
+   padding-left: 1rem;
+   padding-right: 1rem;
+}
+
 th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    @include som;
 }
 
 table {
