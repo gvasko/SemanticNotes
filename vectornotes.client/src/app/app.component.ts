@@ -16,6 +16,7 @@ interface WeatherForecast {
 })
 export class AppComponent implements OnInit {
   public forecasts: WeatherForecast[] = [];
+  public displayedColumns: string[] = ['date', 'temperatureC', 'temperatureF', 'summary'];
 
   constructor(private http: HttpClient) {}
 
