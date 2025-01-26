@@ -19,7 +19,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "lantor",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",

@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  <span class="logo">Semantic Notes</span>
+  <nav class="nav-links">
+    <button mat-button>Home</button>
+    <button mat-button>Notes</button>
+    <button mat-button>Navigation</button>
+  </nav>
+  <span class="spacer"></span>
+  <nav class="nav-links">
+    <button mat-button>Login</button>
+  </nav>
+  <button mat-icon-button class="menu-button" (click)="toggleMenu()">
+    <mat-icon>menu</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!-- Responsive Menu -->
+<div class="mobile-menu" *ngIf="isMenuOpen">
+  <button mat-button>Home</button>
+  <button mat-button>Notes</button>
+  <button mat-button>Navigation</button>
+  <button mat-button>Login</button>
+</div>
