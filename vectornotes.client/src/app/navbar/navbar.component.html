@@ -1,9 +1,9 @@
 <mat-toolbar color="primary">
   <span class="logo">Semantic Notes</span>
   <nav class="nav-links">
-    <button mat-button>Home</button>
-    <button mat-button>Notes</button>
-    <button mat-button>Navigation</button>
+    <a mat-button routerLink="/home">Home</a>
+    <a mat-button routerLink="/notes">Notes</a>
+    <a mat-button routerLink="/navigator">Navigation</a>
   </nav>
   <span class="spacer"></span>
   <nav class="nav-links">
@@ -16,8 +16,8 @@
 
 <!-- Responsive Menu -->
 <div class="mobile-menu" *ngIf="isMenuOpen">
-  <button mat-button>Home</button>
-  <button mat-button>Notes</button>
-  <button mat-button>Navigation</button>
+  <a mat-button routerLink="/home">Home</a>
+  <a mat-button routerLink="/notes">Notes</a>
+  <a mat-button routerLink="/navigator">Navigation</a>
   <button mat-button>Login</button>
 </div>

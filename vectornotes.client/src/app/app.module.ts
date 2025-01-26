@@ -15,12 +15,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { NavbarComponent } from './navbar/navbar.component';
+import { HomeComponent } from './home/home.component';
+import { SemanticNavigatorComponent } from './semantic-navigator/semantic-navigator.component';
+import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SpinnerComponent,
-    NavbarComponent
+    NavbarComponent,
+    HomeComponent,
+    SemanticNavigatorComponent,
+    AllNotesViewComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
