@@ -1,0 +1,19 @@
+<div class="controls">
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Filter by title or content" />
+  </mat-form-field>
+</div>
+
+<div class="card-container">
+  <mat-card class="card" *ngFor="let item of pagedItems">
+    <mat-card-title>{{ item.title }}</mat-card-title>
+    <mat-card-content>{{ item.content }}</mat-card-content>
+  </mat-card>
+</div>
+
+<mat-paginator [length]="filteredItems.length"
+               [pageSize]="5"
+               [pageSizeOptions]="[5, 10, 20]"
+               (page)="onPageChange($event)">
+</mat-paginator>

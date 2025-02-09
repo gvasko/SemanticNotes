@@ -1,0 +1,27 @@
+.mat-tooltip {
+  display: none;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+mat-form-field {
+  width: 300px;
+}
+

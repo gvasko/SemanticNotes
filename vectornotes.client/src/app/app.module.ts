@@ -14,10 +14,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SemanticNavigatorComponent } from './semantic-navigator/semantic-navigator.component';
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
+import { CardListComponent } from './all-notes-view/components/card-list/card-list.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +30,8 @@ import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component
     NavbarComponent,
     HomeComponent,
     SemanticNavigatorComponent,
-    AllNotesViewComponent
+    AllNotesViewComponent,
+    CardListComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -37,7 +42,10 @@ import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatCardModule,
+    MatInputModule,
+    MatPaginatorModule
   ],
   providers: [
     provideAnimationsAsync(),
