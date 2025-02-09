@@ -1,6 +1,3 @@
-.mat-tooltip {
-  display: none;
-}
 
 .card-container {
   display: grid;
@@ -17,8 +14,13 @@
 
 .controls {
   display: flex;
-  justify-content: center;
+  justify-content: left;
   margin-bottom: 16px;
+}
+
+.control-button {
+  font-size: var(--mat-sys-body-large-size);
+  margin-left: 16px;
 }
 
 mat-form-field {
