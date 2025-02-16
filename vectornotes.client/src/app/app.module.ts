@@ -17,11 +17,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SemanticNavigatorComponent } from './semantic-navigator/semantic-navigator.component';
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
 import { CardListComponent } from './all-notes-view/components/card-list/card-list.component';
+import { NoteEditorComponent } from './note-editor/note-editor.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { CardListComponent } from './all-notes-view/components/card-list/card-li
     HomeComponent,
     SemanticNavigatorComponent,
     AllNotesViewComponent,
-    CardListComponent
+    CardListComponent,
+    NoteEditorComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -45,7 +48,8 @@ import { CardListComponent } from './all-notes-view/components/card-list/card-li
     MatListModule,
     MatCardModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ],
   providers: [
     provideAnimationsAsync(),

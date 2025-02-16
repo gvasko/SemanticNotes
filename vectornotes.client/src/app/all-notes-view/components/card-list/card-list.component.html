@@ -3,7 +3,7 @@
     <mat-label>Search</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Filter by title or content" />
   </mat-form-field>
-  <button mat-stroked-button class="control-button mdc-text-field--outlined">
+  <button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="openNewEditor()">
     <span>Add Note</span>
     <mat-icon aria-hidden="false" aria-label="Add new note" fontIcon="add"></mat-icon>
   </button>

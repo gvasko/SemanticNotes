@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Note Editor Title</h2>
+<mat-dialog-content class="mat-typography">
+  <textarea matInput rows="15" placeholder="Enter note..." class="editor-textarea"></textarea>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Save</button>
+</mat-dialog-actions>

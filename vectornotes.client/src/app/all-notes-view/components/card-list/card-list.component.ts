@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { Note } from '../../../model/note';
 import { MatPaginator } from '@angular/material/paginator';
+import { NoteEditorComponent } from '../../../note-editor/note-editor.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'lantor-card-list',
@@ -9,8 +11,12 @@ import { MatPaginator } from '@angular/material/paginator';
   templateUrl: './card-list.component.html',
   styleUrl: './card-list.component.scss'
 })
-
 export class CardListComponent {
+
+  constructor(private dialog: MatDialog) {
+
+  }
+
   public items: Note[] = [
     { title: "Example1", content: "Content, content..." },
     { title: "Example2", content: "Content, content..." },
@@ -47,4 +53,7 @@ export class CardListComponent {
     this.pagedItems = this.filteredItems.slice(0, this.paginator.pageSize);
   }
 
+  openNewEditor() {
+    NoteEditorComponent.openDialog(this.dialog);
+  }
 }
