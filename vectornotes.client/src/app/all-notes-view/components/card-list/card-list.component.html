@@ -9,6 +9,12 @@
   </button>
 </div>
 
+<mat-paginator [length]="filteredItems.length"
+               [pageSize]="5"
+               [pageSizeOptions]="[5, 10, 20]"
+               (page)="onPageChange($event)">
+</mat-paginator>
+
 <div class="card-container">
   <mat-card class="card" *ngFor="let item of pagedItems">
     <mat-card-title>{{ item.title }}</mat-card-title>
@@ -16,8 +22,3 @@
   </mat-card>
 </div>
 
-<mat-paginator [length]="filteredItems.length"
-               [pageSize]="5"
-               [pageSizeOptions]="[5, 10, 20]"
-               (page)="onPageChange($event)">
-</mat-paginator>
