@@ -24,6 +24,7 @@ import { SemanticNavigatorComponent } from './semantic-navigator/semantic-naviga
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
 import { CardListComponent } from './all-notes-view/components/card-list/card-list.component';
 import { NoteEditorComponent } from './note-editor/note-editor.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { NoteEditorComponent } from './note-editor/note-editor.component';
     MatCardModule,
     MatInputModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideAnimationsAsync(),
