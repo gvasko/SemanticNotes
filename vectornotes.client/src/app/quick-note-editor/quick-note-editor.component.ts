@@ -8,14 +8,14 @@ import { NoteRepositoryService } from '../services/note-repository.service';
   selector: 'lantor-note-editor',
   standalone: false,
   
-  templateUrl: './note-editor.component.html',
-  styleUrl: './note-editor.component.scss',
+  templateUrl: './quick-note-editor.component.html',
+  styleUrl: './quick-note-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NoteEditorComponent {
+export class QuickNoteEditorComponent {
 
-  static openDialog(dialog: MatDialog): MatDialogRef<NoteEditorComponent, any> {
-    var dialogRef = dialog.open(NoteEditorComponent);
+  static openDialog(dialog: MatDialog): MatDialogRef<QuickNoteEditorComponent, any> {
+    var dialogRef = dialog.open(QuickNoteEditorComponent);
 
     return dialogRef;
   }

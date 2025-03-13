@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Note } from '../../../model/note';
 import { MatPaginator } from '@angular/material/paginator';
-import { NoteEditorComponent } from '../../../note-editor/note-editor.component';
+import { QuickNoteEditorComponent } from '../../../quick-note-editor/quick-note-editor.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NoteRepositoryService } from '../../../services/note-repository.service';
 
@@ -55,9 +55,10 @@ export class CardListComponent implements OnInit {
   }
 
   openNewEditor() {
-    var dialogRef = NoteEditorComponent.openDialog(this.dialog).afterClosed().subscribe(result => {
+    var dialogRef = QuickNoteEditorComponent.openDialog(this.dialog).afterClosed().subscribe(result => {
       console.log(`Note editor result: ${result}`);
       this.initItems();
+      this.paginator.lastPage();
     });
   }
 }

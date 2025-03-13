@@ -23,7 +23,7 @@ import { HomeComponent } from './home/home.component';
 import { SemanticNavigatorComponent } from './semantic-navigator/semantic-navigator.component';
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
 import { CardListComponent } from './all-notes-view/components/card-list/card-list.component';
-import { NoteEditorComponent } from './note-editor/note-editor.component';
+import { QuickNoteEditorComponent } from './quick-note-editor/quick-note-editor.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -35,7 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SemanticNavigatorComponent,
     AllNotesViewComponent,
     CardListComponent,
-    NoteEditorComponent
+    QuickNoteEditorComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
