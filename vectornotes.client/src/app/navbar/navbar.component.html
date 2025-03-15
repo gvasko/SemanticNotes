@@ -5,9 +5,12 @@
     <a mat-button routerLink="/notes">Notes</a>
     <a mat-button routerLink="/navigator">Navigation</a>
   </nav>
-  <span class="spacer"></span>
+  <span class="spacer mat-h2">
+    {{getUserName()}}
+  </span>
   <nav class="nav-links">
-    <button mat-button>Login</button>
+    <button *ngIf="!isLoggedIn()" mat-button (click)="login()">Login</button>
+    <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
   </nav>
   <button mat-icon-button class="menu-button" (click)="toggleMenu()">
     <mat-icon>menu</mat-icon>
@@ -19,5 +22,6 @@
   <a mat-button routerLink="/home">Home</a>
   <a mat-button routerLink="/notes">Notes</a>
   <a mat-button routerLink="/navigator">Navigation</a>
-  <button mat-button>Login</button>
+  <button *ngIf="!isLoggedIn()" mat-button (click)="login()">Login</button>
+  <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
 </div>
