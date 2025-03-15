@@ -25,7 +25,9 @@ export class CardListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {
-    this.initItems();
+    this.noteRepositoryService.init().then(() => {
+      this.initItems();
+    });
   }
 
   initItems() {

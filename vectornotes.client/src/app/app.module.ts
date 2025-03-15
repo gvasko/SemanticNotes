@@ -1,4 +1,4 @@
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -77,7 +77,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     QuickNoteEditorComponent
   ],
   imports: [
-    BrowserModule, HttpClientModule,
+    BrowserModule,
     MatTableModule,
     AppRoutingModule,
     MatProgressSpinnerModule,
@@ -94,6 +94,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   ],
   providers: [
     provideAnimationsAsync(),
+    provideHttpClient(),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
