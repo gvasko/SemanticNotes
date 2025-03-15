@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VectorNotes.Server.DTO;
 
@@ -6,11 +7,14 @@ namespace VectorNotes.Server.Controllers
 {
     [Route("api/notes")]
     [ApiController]
+    [Authorize(Policy = "ClientAppWithAuthenticatedUser")]
     public class NotesController : ControllerBase
     {
         [HttpGet]
         public ActionResult<IList<NoteListInfoDto>> GetAllNotesByUser()
         {
+            var userData = this.GetUserData();
+
             var notes = new NoteListInfoDto[]
             {
                 new(1, "Example 1", "Content 1"),

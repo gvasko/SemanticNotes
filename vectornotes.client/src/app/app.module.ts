@@ -1,5 +1,5 @@
-import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpInterceptor, provideHttpClient } from '@angular/common/http';
+import { Inject, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,7 +28,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 // Required for MSAL
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
-import { MsalGuard, MsalInterceptor, MsalBroadcastService, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalGuardConfiguration, MsalRedirectComponent } from '@azure/msal-angular';
+import { MsalGuard, MsalInterceptor, MsalBroadcastService, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalGuardConfiguration, MsalRedirectComponent, ProtectedResourceScopes } from '@azure/msal-angular';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -42,13 +42,25 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     cache: {
       cacheLocation: BrowserCacheLocation.LocalStorage,
       storeAuthStateInCookie: isIE
-    }
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback(logLevel: LogLevel, message: string) {
+          console.log(message);
+        },
+        logLevel: LogLevel.Verbose,
+        piiLoggingEnabled: true,
+      },
+    },
   });
 }
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
-  const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']);
+  const protectedResourceMap = new Map<string, Array<string | ProtectedResourceScopes> | null>();
+
+  protectedResourceMap.set("https://graph.microsoft.com/v1.0/me", ["user.read"]);
+
+  protectedResourceMap.set("/api/", ["api://95186c57-9c79-4de8-a29e-bea5d80b6cd8/Notes.Manage"]);
 
   return {
     interactionType: InteractionType.Redirect,
@@ -90,11 +102,13 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MatInputModule,
     MatPaginatorModule,
     MatDialogModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule,
+    MsalModule
   ],
   providers: [
     provideAnimationsAsync(),
-    provideHttpClient(),
+    //provideHttpClient(), bad idea, MsalInterceptor won't work
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,

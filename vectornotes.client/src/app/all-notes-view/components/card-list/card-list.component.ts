@@ -58,9 +58,10 @@ export class CardListComponent implements OnInit {
 
   openNewEditor() {
     var dialogRef = QuickNoteEditorComponent.openDialog(this.dialog).afterClosed().subscribe(result => {
-      console.log(`Note editor result: ${result}`);
-      this.initItems();
-      this.paginator.lastPage();
+      if (result) {
+        this.initItems();
+        this.paginator.lastPage();
+      }
     });
   }
 }

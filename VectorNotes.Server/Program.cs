@@ -1,9 +1,44 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(options =>
+    {
+        builder.Configuration.Bind("AzureAd", options);
+        options.IncludeErrorDetails = true;
+        //options.TokenValidationParameters.NameClaimType = "name";
+        options.Events = new JwtBearerEvents();
+
+        options.Events.OnTokenValidated = context =>
+        {
+
+            string? clientappId = context?.Principal?.Claims
+                .FirstOrDefault(x => x.Type == "azp" || x.Type == "appid")?.Value;
+
+            //Log.Information("ClientAppId: {clientappid}", clientappId);
+            return Task.CompletedTask;
+        };
+
+        options.Events.OnForbidden = context =>
+        {
+            //Log.Warning("forbidden");
+            return Task.CompletedTask;
+        };
+
+    }, options => { builder.Configuration.Bind("AzureAd", options); }, subscribeToJwtBearerMiddlewareDiagnosticsEvents: true);
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("ClientApp", policy =>
+        policy.RequireScope("Notes.Manage"))
+    .AddPolicy("ClientAppWithAuthenticatedUser", policy =>
+        policy.RequireScope("Notes.Manage")
+        .RequireAuthenticatedUser());
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -20,7 +55,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+//app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
