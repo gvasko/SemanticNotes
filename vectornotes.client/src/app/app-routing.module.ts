@@ -3,11 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
 import { SemanticNavigatorComponent } from './semantic-navigator/semantic-navigator.component';
+import { MsalGuard, MsalRedirectComponent } from '@azure/msal-angular';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
-  { path: 'notes', component: AllNotesViewComponent },
-  { path: 'navigator', component: SemanticNavigatorComponent },
+  { path: 'notes', component: AllNotesViewComponent, canActivate: [MsalGuard] },
+  { path: 'navigator', component: SemanticNavigatorComponent, canActivate: [MsalGuard] },
   { path: '**', redirectTo: '/home', pathMatch: 'full' }
 ];
 
