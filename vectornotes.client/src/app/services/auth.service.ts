@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
 import { InteractionStatus, EventMessage, RedirectRequest, EventType, AuthenticationResult } from '@azure/msal-browser';
 import { Subject, filter, takeUntil } from 'rxjs';
+import { UserApiService } from './api/user-api.service';
+import { UserInfo } from '../model/user-info';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class AuthService {
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private msalService: MsalService,
-    private msalBroadcastService: MsalBroadcastService
+    private msalBroadcastService: MsalBroadcastService,
+    private userApiService: UserApiService
   ) { }
 
   init() {
@@ -25,8 +28,12 @@ export class AuthService {
         takeUntil(this._destroying$)
       )
       .subscribe(() => {
-        this.setAuthenticated();
-        this.isInitialized = true;
+        console.log("Ensure user is created.")
+        this.userApiService.create(new UserInfo()).subscribe(userInfo => {
+          console.log("Email: " + userInfo.email);
+          this.setAuthenticated();
+          this.isInitialized = true;
+        })
       });
 
     this.msalBroadcastService.msalSubject$
@@ -36,6 +43,8 @@ export class AuthService {
       .subscribe((result: EventMessage) => {
         const payload = result.payload as AuthenticationResult;
         this.msalService.instance.setActiveAccount(payload.account);
+        console.log("Ensure user is created.")
+        this.userApiService.create(new UserInfo());
       });
 
     // Used for storing and displaying token expiration

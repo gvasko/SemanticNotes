@@ -11,23 +11,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         builder.Configuration.Bind("AzureAd", options);
         options.IncludeErrorDetails = true;
         //options.TokenValidationParameters.NameClaimType = "name";
-        options.Events = new JwtBearerEvents();
+        //options.Events = new JwtBearerEvents();
 
-        options.Events.OnTokenValidated = context =>
-        {
+        //options.Events.OnTokenValidated = context =>
+        //{
 
-            string? clientappId = context?.Principal?.Claims
-                .FirstOrDefault(x => x.Type == "azp" || x.Type == "appid")?.Value;
+        //    string? clientappId = context?.Principal?.Claims
+        //        .FirstOrDefault(x => x.Type == "azp" || x.Type == "appid")?.Value;
 
-            //Log.Information("ClientAppId: {clientappid}", clientappId);
-            return Task.CompletedTask;
-        };
+        //    //Log.Information("ClientAppId: {clientappid}", clientappId);
+        //    return Task.CompletedTask;
+        //};
 
-        options.Events.OnForbidden = context =>
-        {
-            //Log.Warning("forbidden");
-            return Task.CompletedTask;
-        };
+        //options.Events.OnForbidden = context =>
+        //{
+        //    //Log.Warning("forbidden");
+        //    return Task.CompletedTask;
+        //};
 
     }, options => { builder.Configuration.Bind("AzureAd", options); }, subscribeToJwtBearerMiddlewareDiagnosticsEvents: true);
 

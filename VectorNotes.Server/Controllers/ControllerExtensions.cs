@@ -14,9 +14,9 @@ namespace VectorNotes.Server.Controllers
 
         public static UserData GetUserData(this ControllerBase controller)
         {
-            string? name = controller.HttpContext.User.FindAll("name").Select(r => r.Value).ToList().FirstOrDefault();
-            string? userName = controller.HttpContext.User.FindAll("preferred_username").Select(r => r.Value).ToList().FirstOrDefault();
-            string? email = controller.HttpContext.User.FindAll("email").Select(r => r.Value).ToList().FirstOrDefault();
+            string? name = controller.HttpContext.User.FindAll(ClaimTypes.Name).Select(r => r.Value).ToList().FirstOrDefault();
+            string? userName = null;
+            string? email = controller.HttpContext.User.FindAll(ClaimTypes.Email).Select(r => r.Value).ToList().FirstOrDefault();
             string? externalId = controller.HttpContext.User.FindAll("http://schemas.microsoft.com/identity/claims/objectidentifier").Select(r => r.Value).ToList().FirstOrDefault();
             return new(name, userName, email, externalId);
         }

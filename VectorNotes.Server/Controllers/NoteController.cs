@@ -5,10 +5,10 @@ using VectorNotes.Server.DTO;
 
 namespace VectorNotes.Server.Controllers
 {
-    [Route("api/notes")]
+    [Route("api/note")]
     [ApiController]
     [Authorize(Policy = "ClientAppWithAuthenticatedUser")]
-    public class NotesController : ControllerBase
+    public class NoteController : ControllerBase
     {
         [HttpGet]
         public ActionResult<IList<NoteListInfoDto>> GetAllNotesByUser()
