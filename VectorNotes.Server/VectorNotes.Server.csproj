@@ -21,6 +21,8 @@
     <ProjectReference Include="..\vectornotes.client\vectornotes.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\VectorNotes.Data\VectorNotes.Data.csproj" />
+    <ProjectReference Include="..\VectorNotes.DomainModel\VectorNotes.DomainModel.csproj" />
   </ItemGroup>
 
 </Project>
