@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using VectorNotes.Data;
+using VectorNotes.DomainModel;
+using VectorNotes.Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<VectorNotesContext>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserService, StrictUserService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 
 namespace VectorNotes.Server.Controllers
@@ -10,18 +11,26 @@ namespace VectorNotes.Server.Controllers
     [Authorize(Policy = "ClientAppWithAuthenticatedUser")]
     public class UserController : ControllerBase
     {
-        [HttpPost]
-        public ActionResult<UserInfoDto> EnsureCreated()
+        private readonly IUserService userService;
+
+        public UserController(IUserService userService)
         {
-            var userData = this.GetUserData();
+            this.userService = userService;
+        }
 
-            if (userData?.Email == null)
+        [HttpPost]
+        public async ActionResult<UserInfoDto> EnsureCreated()
+        {
+            User? user = null;
+            try
             {
-                return BadRequest("Authentication error: email not found");
+                user = await userService.GetCurrentUserAsync();
             }
-
-            // TODO: Create user if not exists
-            return Ok(new UserInfoDto(-1, userData.Email));
+            catch (InvalidOperationException exc)
+            {
+                return 
+            }
+            return Ok();
         }
     }
 }

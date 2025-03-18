@@ -13,8 +13,6 @@ namespace VectorNotes.Server.Controllers
         [HttpGet]
         public ActionResult<IList<NoteListInfoDto>> GetAllNotesByUser()
         {
-            var userData = this.GetUserData();
-
             var notes = new NoteListInfoDto[]
             {
                 new(1, "Example 1", "Content 1"),
