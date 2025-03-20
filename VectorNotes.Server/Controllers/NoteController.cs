@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.Versioning;
 using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 
@@ -24,11 +25,11 @@ namespace VectorNotes.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<NoteDto>>> GetAllNotesByUser()
         {
-            IList<NoteDto>? noteDtoList = null;
             try
             {
                 var noteList = (await uow.GetAllNotesByOwnerAsync()).ToList();
-                noteDtoList = mapper.Map<IList<NoteDto>>(noteList);
+                var noteDtoList = mapper.Map<IList<NoteDto>>(noteList);
+                return Ok(noteDtoList);
             }
             catch (InvalidOperationException exc)
             {
@@ -40,7 +41,28 @@ namespace VectorNotes.Server.Controllers
                 // TODO: log
                 return Problem();
             }
-            return Ok(noteDtoList);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<NoteDto>> CreateNote(NoteDto newNote)
+        {
+            try
+            {
+                var note = mapper.Map<Note>(newNote);
+                var dbNote = await uow.CreateNoteAsync(note);
+                await uow.SaveAsync();
+                return Ok(mapper.Map<NoteDto>(dbNote));
+            }
+            catch (InvalidOperationException exc)
+            {
+                // TODO: log
+                return Unauthorized();
+            }
+            catch (Exception exc)
+            {
+                // TODO: log
+                return Problem();
+            }
         }
     }
 }

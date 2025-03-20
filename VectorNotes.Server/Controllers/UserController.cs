@@ -24,11 +24,11 @@ namespace VectorNotes.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<UserInfoDto>> EnsureCreated()
         {
-            UserInfoDto? userDto = null;
             try
             {
                 var user = await userService.GetCurrentUserAsync();
-                userDto = mapper.Map<UserInfoDto>(user);
+                var userDto = mapper.Map<UserInfoDto>(user);
+                return Ok(userDto);
             }
             catch (InvalidOperationException exc)
             {
@@ -40,7 +40,6 @@ namespace VectorNotes.Server.Controllers
                 // TODO: log
                 return Problem();
             }
-            return Ok(userDto);
         }
     }
 }

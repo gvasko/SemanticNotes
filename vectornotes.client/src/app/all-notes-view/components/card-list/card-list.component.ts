@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Note } from '../../../model/note';
 import { MatPaginator } from '@angular/material/paginator';
 import { QuickNoteEditorComponent } from '../../../quick-note-editor/quick-note-editor.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NoteRepositoryService } from '../../../services/note-repository.service';
+import { combineLatest, Subject, Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'lantor-card-list',
@@ -12,7 +13,7 @@ import { NoteRepositoryService } from '../../../services/note-repository.service
   templateUrl: './card-list.component.html',
   styleUrl: './card-list.component.scss'
 })
-export class CardListComponent implements OnInit {
+export class CardListComponent implements OnInit, OnDestroy {
 
   constructor(private dialog: MatDialog, private noteRepositoryService: NoteRepositoryService) {
 
@@ -22,18 +23,30 @@ export class CardListComponent implements OnInit {
   public filteredItems: Note[] = [];
   public pagedItems: Note[] = [];
 
+  private notesSubscription: Subscription | undefined;
+
+  private notesUpdated: Subject<number> = new Subject();
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {
-    this.noteRepositoryService.init().then(() => {
-      this.initItems();
+    this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {
+      this.initItems(notes);
     });
+    this.noteRepositoryService.init();
   }
 
-  initItems() {
-    this.items = this.noteRepositoryService.getNotes();
+  ngOnDestroy() {
+    this.notesSubscription?.unsubscribe();
+  }
+
+  initItems(notes: Note[]) {
+    this.items = notes;
     this.filteredItems = [...this.items];
     this.pagedItems = [...this.items.slice(0, 5)];
+    this.paginator.length = this.filteredItems.length;
+    this.paginator.firstPage();
+    this.notesUpdated.next(notes.length);
   }
 
   applyFilter(event: Event) {
@@ -43,7 +56,7 @@ export class CardListComponent implements OnInit {
       item.content?.toLowerCase().includes(filterValue)
     );
     this.paginator.firstPage();
-    this.updatePagedItems();
+    this.resetPagedItems();
   }
 
   onPageChange(event: any) {
@@ -52,15 +65,18 @@ export class CardListComponent implements OnInit {
     this.pagedItems = this.filteredItems.slice(startIndex, endIndex);
   }
 
-  updatePagedItems() {
+  resetPagedItems() {
     this.pagedItems = this.filteredItems.slice(0, this.paginator.pageSize);
   }
 
   openNewEditor() {
+    var dialogClosed: Subject<boolean> = new Subject();
+    combineLatest([this.notesUpdated, dialogClosed]).pipe(take(1)).subscribe(() => {
+      this.paginator?.lastPage();
+    });
     var dialogRef = QuickNoteEditorComponent.openDialog(this.dialog).afterClosed().subscribe(result => {
       if (result) {
-        this.initItems();
-        this.paginator.lastPage();
+        dialogClosed.next(result);
       }
     });
   }
