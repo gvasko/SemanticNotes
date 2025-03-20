@@ -42,9 +42,9 @@ namespace VectorNotes.DomainModel
             return basicUnitOfWork.GetAllNotes().FirstOrDefault(note => note.OwnerId == user.Id && note.Id == id);
         }
 
-        public Task Save()
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+            await basicUnitOfWork.SaveAsync();
         }
     }
 }

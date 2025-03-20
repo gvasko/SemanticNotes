@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 
 namespace VectorNotes.Server.Controllers
@@ -10,21 +12,35 @@ namespace VectorNotes.Server.Controllers
     [Authorize(Policy = "ClientAppWithAuthenticatedUser")]
     public class NoteController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<IList<NoteDto>> GetAllNotesByUser()
-        {
-            var notes = new NoteDto[]
-            {
-                new(1, "Example 1", "Content 1"),
-                new(2, "Example 2", "Content 2"),
-                new(3, "Example 3", "Content 3"),
-                new(4, "Example 4", "Content 4"),
-                new(5, "Example 5", "Content 5"),
-                new(6, "Example 6", "Content 6"),
-                new(7, "Example 7", "Content 7")
-            };
+        private readonly IOwnerEnsuredUnitOfWork uow;
+        private readonly IMapper mapper;
 
-            return notes;
+        public NoteController(IOwnerEnsuredUnitOfWork uow, IMapper mapper)
+        {
+            this.uow = uow;
+            this.mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IList<NoteDto>>> GetAllNotesByUser()
+        {
+            IList<NoteDto>? noteDtoList = null;
+            try
+            {
+                var noteList = (await uow.GetAllNotesByOwnerAsync()).ToList();
+                noteDtoList = mapper.Map<IList<NoteDto>>(noteList);
+            }
+            catch (InvalidOperationException exc)
+            {
+                // TODO: log
+                return Unauthorized();
+            }
+            catch (Exception exc)
+            {
+                // TODO: log
+                return Problem();
+            }
+            return Ok(noteDtoList);
         }
     }
 }

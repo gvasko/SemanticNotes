@@ -38,7 +38,7 @@ namespace VectorNotes.Data.Infrastructure
             return await dbContext.Notes.AsNoTracking().FirstOrDefaultAsync(note => note.Id == id);
         }
 
-        public async Task Save()
+        public async Task SaveAsync()
         {
             await dbContext.SaveChangesAsync();
         }

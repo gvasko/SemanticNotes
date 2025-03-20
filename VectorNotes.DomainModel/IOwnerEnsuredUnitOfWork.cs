@@ -14,7 +14,7 @@ namespace VectorNotes.DomainModel
         Task DeleteNoteByIdAsync(int noteId);
 
 
-        Task Save();
+        Task SaveAsync();
 
     }
 }

@@ -30,10 +30,15 @@ namespace VectorNotes.Server.Controllers
                 var user = await userService.GetCurrentUserAsync();
                 userDto = mapper.Map<UserInfoDto>(user);
             }
+            catch (InvalidOperationException exc)
+            {
+                // TODO: log
+                return Unauthorized();
+            }
             catch (Exception exc)
             {
                 // TODO: log
-                return Forbid();
+                return Problem();
             }
             return Ok(userDto);
         }

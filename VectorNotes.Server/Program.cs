@@ -53,6 +53,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, StrictUserService>();
 builder.Services.AddScoped<IBasicUnitOfWork, BasicUnitOfWork>();
+builder.Services.AddScoped<IOwnerEnsuredUnitOfWork, OwnerEnsuredUnitOfWork>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
