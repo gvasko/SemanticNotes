@@ -1,9 +1,6 @@
 ﻿namespace VectorNotes.Server.DTO
 {
-    public class NoteListInfoDto
+    public record class NoteListInfoDto(int Id, string Title, string ContentPreview)
     {
-        int Id;
-        string Title;
-        string Content;
     }
 }

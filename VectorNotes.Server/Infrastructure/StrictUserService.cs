@@ -24,7 +24,7 @@ namespace VectorNotes.Server.Infrastructure
         {
             var user = (httpContextAccessor.HttpContext?.User) ?? throw new InvalidOperationException("User data cannot be found in HttpContextAccessor");
 
-            string? name = user.FindAll(ClaimTypes.Name).Select(r => r.Value).ToList().FirstOrDefault();
+            string? name = user.FindAll("name").Select(r => r.Value).ToList().FirstOrDefault();
             string email = user.FindAll(ClaimTypes.Email).Select(r => r.Value).ToList().FirstOrDefault()
                 ?? throw new InvalidOperationException("Email cannot be found in HttpContextAccessor");
 

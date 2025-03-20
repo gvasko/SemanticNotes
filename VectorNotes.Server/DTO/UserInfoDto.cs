@@ -1,9 +1,6 @@
 ﻿namespace VectorNotes.Server.DTO
 {
-    public class UserInfoDto
+    public record class UserInfoDto (int Id, string Name, string Email)
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
     }
 }

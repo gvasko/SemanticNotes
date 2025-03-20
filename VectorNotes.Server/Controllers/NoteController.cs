@@ -11,9 +11,9 @@ namespace VectorNotes.Server.Controllers
     public class NoteController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<IList<NoteListInfoDto>> GetAllNotesByUser()
+        public ActionResult<IList<NoteDto>> GetAllNotesByUser()
         {
-            var notes = new NoteListInfoDto[]
+            var notes = new NoteDto[]
             {
                 new(1, "Example 1", "Content 1"),
                 new(2, "Example 2", "Content 2"),

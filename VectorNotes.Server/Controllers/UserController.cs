@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VectorNotes.DomainModel;
@@ -12,25 +13,29 @@ namespace VectorNotes.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly IMapper mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper)
         {
             this.userService = userService;
+            this.mapper = mapper;
         }
 
         [HttpPost]
-        public async ActionResult<UserInfoDto> EnsureCreated()
+        public async Task<ActionResult<UserInfoDto>> EnsureCreated()
         {
-            User? user = null;
+            UserInfoDto? userDto = null;
             try
             {
-                user = await userService.GetCurrentUserAsync();
+                var user = await userService.GetCurrentUserAsync();
+                userDto = mapper.Map<UserInfoDto>(user);
             }
-            catch (InvalidOperationException exc)
+            catch (Exception exc)
             {
-                return 
+                // TODO: log
+                return Forbid();
             }
-            return Ok();
+            return Ok(userDto);
         }
     }
 }
