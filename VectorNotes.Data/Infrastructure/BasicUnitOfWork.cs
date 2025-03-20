@@ -42,5 +42,10 @@ namespace VectorNotes.Data.Infrastructure
         {
             await dbContext.SaveChangesAsync();
         }
+
+        public Note UpdateNote(Note note)
+        {
+            return dbContext.Notes.Update(note).Entity;
+        }
     }
 }

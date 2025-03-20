@@ -20,8 +20,8 @@ export abstract class BaseApiService<T> {
     return this.http.post<T>(this.baseUrl, item).pipe(take(1), catchError(this.handleError));
   }
 
-  update(id: number | string, item: T): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${id}`, item).pipe(take(1), catchError(this.handleError));
+  update(item: T): Observable<T> {
+    return this.http.put<T>(this.baseUrl, item).pipe(take(1), catchError(this.handleError));
   }
 
   delete(id: number | string): Observable<void> {

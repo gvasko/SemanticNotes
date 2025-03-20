@@ -11,6 +11,7 @@ namespace VectorNotes.DomainModel
         Task<Note?> GetNoteByIdAsync(int id);
         Task<IQueryable<Note>> GetAllNotesByOwnerAsync();
         Task<Note> CreateNoteAsync(Note note);
+        Task<Note> UpdateNoteAsync(Note note);
         Task DeleteNoteByIdAsync(int noteId);
 
 

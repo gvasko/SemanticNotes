@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Note } from '../model/note';
 import { NoteRepositoryService } from '../services/note-repository.service';
 
@@ -12,15 +12,9 @@ import { NoteRepositoryService } from '../services/note-repository.service';
   styleUrl: './quick-note-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QuickNoteEditorComponent {
+export class QuickNoteEditorComponent implements OnInit {
 
-  static openDialog(dialog: MatDialog): MatDialogRef<QuickNoteEditorComponent, any> {
-    var dialogRef = dialog.open(QuickNoteEditorComponent);
-
-    return dialogRef;
-  }
-
-  constructor(private noteRepositoryService: NoteRepositoryService) {
+  constructor(@Inject(MAT_DIALOG_DATA) private currentNote: Note, private noteRepositoryService: NoteRepositoryService) {
 
   }
 
@@ -29,6 +23,12 @@ export class QuickNoteEditorComponent {
     title: new FormControl(""),
     content: new FormControl("")
   });
+
+  public ngOnInit() {
+    if (this.currentNote) {
+      this.formGroup.patchValue(this.currentNote);
+    }
+  }
 
   public saveButtonClicked() {
     const rawValue = this.formGroup.getRawValue();
@@ -42,7 +42,7 @@ export class QuickNoteEditorComponent {
     if (note.id === 0) {
       this.noteRepositoryService.addNote(note);
     } else {
-      console.log("Update existing note...");
+      this.noteRepositoryService.updateNote(note);
     }
   }
 

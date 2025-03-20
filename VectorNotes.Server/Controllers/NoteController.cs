@@ -64,5 +64,27 @@ namespace VectorNotes.Server.Controllers
                 return Problem();
             }
         }
+
+        [HttpPut]
+        public async Task<ActionResult<NoteDto>> UpdateNote(NoteDto updatedNote)
+        {
+            try
+            {
+                var note = mapper.Map<Note>(updatedNote);
+                var dbNote = await uow.UpdateNoteAsync(note);
+                await uow.SaveAsync();
+                return Ok(mapper.Map<NoteDto>(dbNote));
+            }
+            catch (InvalidOperationException exc)
+            {
+                // TODO: log
+                return Unauthorized();
+            }
+            catch (Exception exc)
+            {
+                // TODO: log
+                return Problem();
+            }
+        }
     }
 }

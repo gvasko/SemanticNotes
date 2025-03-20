@@ -3,7 +3,7 @@
     <mat-label>Search</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Filter by title or content" />
   </mat-form-field>
-  <button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="openNewEditor()">
+  <button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="openEditorToCreateNewNote()">
     <span>Add Note</span>
     <mat-icon aria-hidden="false" aria-label="Add new note" fontIcon="add"></mat-icon>
   </button>
@@ -16,7 +16,7 @@
 </mat-paginator>
 
 <div class="card-container">
-  <mat-card class="card" *ngFor="let item of pagedItems">
+  <mat-card class="card" *ngFor="let item of pagedItems" (click)="openEditorToEditNote(item)">
     <mat-card-title>{{ item.title }}</mat-card-title>
     <mat-card-content>{{ item.content }}</mat-card-content>
   </mat-card>

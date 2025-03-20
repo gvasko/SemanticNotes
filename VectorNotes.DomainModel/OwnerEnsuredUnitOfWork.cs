@@ -46,5 +46,15 @@ namespace VectorNotes.DomainModel
         {
             await basicUnitOfWork.SaveAsync();
         }
+
+        public async Task<Note> UpdateNoteAsync(Note updatedNote)
+        {
+            var noteFound = await GetNoteByIdAsync(updatedNote.Id) ?? throw new ArgumentException("Note not found");
+
+            noteFound.Title = updatedNote.Title;
+            noteFound.Content = updatedNote.Content;
+
+            return basicUnitOfWork.UpdateNote(noteFound);
+        }
     }
 }
