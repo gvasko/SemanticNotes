@@ -10,11 +10,13 @@ namespace VectorNotes.DomainModel
     {
         private readonly IBasicUnitOfWork basicUoW;
         private readonly IUserService userService;
+        private readonly ITextVectorBuilder textVectorBuilder;
 
         public DomainUnitOfWork(IBasicUnitOfWork basicUnitOfWork, IUserService userService)
         {
             this.basicUoW = basicUnitOfWork;
             this.userService = userService;
+            this.textVectorBuilder = new TextVectorBuilder();
         }
 
         public async Task CreateOrUpdateTextVectorInCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector)
@@ -24,7 +26,10 @@ namespace VectorNotes.DomainModel
             {
                 throw new ArgumentException("Unknown note object");
             }
-
+            if (user.Id != alphabet.OwnerId)
+            {
+                throw new ArgumentException("Unknown alphabet object");
+            }
             await basicUoW.CreateOrUpdateTextVectorInCacheAsync(note, alphabet, vector);
         }
 
@@ -41,7 +46,17 @@ namespace VectorNotes.DomainModel
             var user = await userService.GetCurrentUserAsync();
             note.OwnerId = user.Id;
             note.Owner = null;
-            return await basicUoW.CreateNoteAsync(note);
+            var dbNote = await basicUoW.CreateNoteAsync(note);
+
+            await CreateOrUpdateTextVectorWithDefaultAlphabet(dbNote);
+            return dbNote;
+        }
+
+        private async Task CreateOrUpdateTextVectorWithDefaultAlphabet(Note note)
+        {
+            var abc = await GetDefaultAlphabetAsync();
+            var vector = textVectorBuilder.BuildTextVector(abc, note.Content);
+            await CreateOrUpdateTextVectorInCacheAsync(note, abc, vector);
         }
 
         public Task DeleteNoteByIdAsync(int noteId)
@@ -130,12 +145,15 @@ namespace VectorNotes.DomainModel
 
         public async Task<Note> UpdateNoteAsync(Note updatedNote)
         {
-            var noteFound = await GetNoteByIdAsync(updatedNote.Id) ?? throw new ArgumentException("Note not found");
+            var existingNote = await GetNoteByIdAsync(updatedNote.Id) ?? throw new ArgumentException("Note not found");
 
-            noteFound.Title = updatedNote.Title;
-            noteFound.Content = updatedNote.Content;
+            existingNote.Title = updatedNote.Title;
+            existingNote.Content = updatedNote.Content;
 
-            return await basicUoW.UpdateNoteAsync(noteFound);
+            var dbNote = await basicUoW.UpdateNoteAsync(existingNote);
+
+            await CreateOrUpdateTextVectorWithDefaultAlphabet(dbNote);
+            return dbNote;
         }
 
         Task<IQueryable<Alphabet>> IBasicUnitOfWork.GetAllAlphabetsAsync()

@@ -29,17 +29,20 @@ namespace VectorNotes.Data.Infrastructure
                 existingVector.Vector = vector;
                 dbContext.NoteTextVectorCache.Update(existingVector);
             }
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<Alphabet> CreateAlphabetAsync(Alphabet alphabet)
         {
             var entry = await dbContext.Alphabets.AddAsync(alphabet);
+            await dbContext.SaveChangesAsync();
             return entry.Entity;
         }
 
         public async Task<Note> CreateNoteAsync(Note note)
         {
             var entry = await dbContext.Notes.AddAsync(note);
+            await dbContext.SaveChangesAsync();
             return entry.Entity;
         }
 
@@ -50,7 +53,7 @@ namespace VectorNotes.Data.Infrastructure
 
         public Task<IQueryable<Alphabet>> GetAllAlphabetsAsync()
         {
-            return Task.FromResult(dbContext.Alphabets.AsNoTracking());
+            return Task.FromResult(dbContext.Alphabets.Include(abc => abc.LetterVectors).AsNoTracking());
         }
 
         public Task<IQueryable<Note>> GetAllNotesAsync()
@@ -94,9 +97,11 @@ namespace VectorNotes.Data.Infrastructure
             await dbContext.SaveChangesAsync();
         }
 
-        public Task<Note> UpdateNoteAsync(Note note)
+        public async Task<Note> UpdateNoteAsync(Note note)
         {
-            return Task.FromResult(dbContext.Notes.Update(note).Entity);
+            var updatedNote = dbContext.Notes.Update(note).Entity;
+            await dbContext.SaveChangesAsync();
+            return updatedNote;
         }
 
    }
