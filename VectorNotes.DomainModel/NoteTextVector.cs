@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VectorNotes.DomainModel
 {
-    public class NoteTextVectorCache
+    public class NoteTextVector
     {
         public int Id { get; set; }
         public int? NoteId { get; set; }
@@ -15,12 +15,12 @@ namespace VectorNotes.DomainModel
         public Alphabet? Alphabet { get; set; }
         public HiDimBipolarVector Vector { get; set; }
 
-        public NoteTextVectorCache()
+        public NoteTextVector()
         {
             Vector = new HiDimBipolarVector();
         }
 
-        public NoteTextVectorCache(int noteId, int alphabetId, HiDimBipolarVector vector)
+        public NoteTextVector(int noteId, int alphabetId, HiDimBipolarVector vector)
         {
             NoteId = noteId;
             AlphabetId = alphabetId;

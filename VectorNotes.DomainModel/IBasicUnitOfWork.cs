@@ -9,13 +9,18 @@ namespace VectorNotes.DomainModel
     public interface IBasicUnitOfWork
     {
         Task<Note?> GetNoteByIdAsync(int id);
-        IQueryable<Note> GetAllNotes();
+        Task<IQueryable<Note>> GetAllNotesAsync();
         Task<Note> CreateNoteAsync(Note note);
-        Note UpdateNote(Note note);
+        Task<Note> UpdateNoteAsync(Note note);
         Task DeleteNoteByIdAsync(int noteId);
 
-        Task<HiDimBipolarVector?> GetTextVectorFromCacheAsync(Note note, Alphabet alphabet);
-        Task AddTextVectorToCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector);
+        Task<Alphabet?> GetAlphabetAsync(int id);
+        Task<IQueryable<Alphabet>> GetAllAlphabetsAsync();
+        Task<Alphabet> CreateAlphabetAsync(Alphabet alphabet);
+        Task RemoveAlphabetAsync(int alphabetId);
+
+        Task<NoteTextVector?> GetTextVectorFromCacheAsync(Note note, Alphabet alphabet);
+        Task CreateOrUpdateTextVectorInCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector);
         void RemoveNoteFromCacheAsync(int noteId);
         void RemoveAlphabetFromCache(int alphabetId);
 

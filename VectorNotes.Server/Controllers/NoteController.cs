@@ -27,7 +27,7 @@ namespace VectorNotes.Server.Controllers
         {
             try
             {
-                var noteList = (await uow.GetAllNotesByOwnerAsync()).ToList();
+                var noteList = (await uow.GetAllNotesAsync()).ToList();
                 var noteDtoList = mapper.Map<IList<NoteDto>>(noteList);
                 return Ok(noteDtoList);
             }

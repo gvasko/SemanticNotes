@@ -38,21 +38,21 @@ namespace VectorNotes.DomainModel
 
                 NoteSimilarityValue[] similarityValues = new NoteSimilarityValue[maxCount];
                 int i = 0;
-                foreach (var note in await domainUow.GetAllNotesByOwnerAsync())
+                foreach (var note in await domainUow.GetAllNotesAsync())
                 {
                     if (note.Id == originalNote.Id)
                     {
                         continue;
                     }
 
-                    var textVector = await domainUow.GetTextVectorFromCacheAsync(note, alphabet);
+                    var textVector = (await domainUow.GetTextVectorFromCacheAsync(note, alphabet))?.Vector;
 
                     if (textVector == null)
                     {
                         Log.Debug("Text vector for '{note}' not found in cache. Calculating...", note.Title);
                         textVector = textVectorBuilder.BuildTextVector(alphabet, note.Content);
                         Log.Debug("Text vector for '{note}' generated.", note.Title);
-                        await domainUow.AddTextVectorToCacheAsync(note, alphabet, textVector);
+                        await domainUow.CreateOrUpdateTextVectorInCacheAsync(note, alphabet, textVector);
                         await domainUow.SaveAsync();
                         Log.Debug("Text vector for '{note}' stored in cache.", note.Title);
                     }

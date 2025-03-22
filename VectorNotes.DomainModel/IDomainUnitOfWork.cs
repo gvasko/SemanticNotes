@@ -6,23 +6,12 @@ using System.Threading.Tasks;
 
 namespace VectorNotes.DomainModel
 {
-    public interface IDomainUnitOfWork
+    /// <summary>
+    /// Ensures correct owner
+    /// Extends IBasicUnitOfWork with advanced operations
+    /// </summary>
+    public interface IDomainUnitOfWork : IBasicUnitOfWork
     {
-        Task<Note?> GetNoteByIdAsync(int id);
-        Task<IQueryable<Note>> GetAllNotesByOwnerAsync();
-        Task<Note> CreateNoteAsync(Note note);
-        Task<Note> UpdateNoteAsync(Note note);
-        Task DeleteNoteByIdAsync(int noteId);
-
         Task<Alphabet> GetDefaultAlphabetAsync();
-
-        Task<HiDimBipolarVector?> GetTextVectorFromCacheAsync(Note note, Alphabet alphabet);
-        Task AddTextVectorToCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector);
-        void RemoveNoteFromCacheAsync(int noteId);
-        void RemoveAlphabetFromCache(int alphabetId);
-
-
-        Task SaveAsync();
-
     }
 }
