@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace VectorNotes.DomainModel
 {
-    public class OwnerEnsuredUnitOfWork : IOwnerEnsuredUnitOfWork
+    /// <summary>
+    /// Owner usage is ensured
+    /// </summary>
+    public class DomainUnitOfWork : IDomainUnitOfWork
     {
         private readonly IBasicUnitOfWork basicUnitOfWork;
         private readonly IUserService userService;
 
-        public OwnerEnsuredUnitOfWork(IBasicUnitOfWork basicUnitOfWork, IUserService userService)
+        public DomainUnitOfWork(IBasicUnitOfWork basicUnitOfWork, IUserService userService)
         {
             this.basicUnitOfWork = basicUnitOfWork;
             this.userService = userService;

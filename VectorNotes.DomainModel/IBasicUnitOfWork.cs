@@ -14,6 +14,10 @@ namespace VectorNotes.DomainModel
         Note UpdateNote(Note note);
         Task DeleteNoteByIdAsync(int noteId);
 
+        Task<HiDimBipolarVector?> GetTextVectorFromCacheAsync(Note note, Alphabet alphabet);
+        Task AddTextVectorToCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector);
+        void RemoveNoteFromCacheAsync(int noteId);
+        void RemoveAlphabetFromCache(int alphabetId);
 
         Task SaveAsync();
 

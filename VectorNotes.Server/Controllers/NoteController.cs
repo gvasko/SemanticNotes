@@ -13,10 +13,10 @@ namespace VectorNotes.Server.Controllers
     [Authorize(Policy = "ClientAppWithAuthenticatedUser")]
     public class NoteController : ControllerBase
     {
-        private readonly IOwnerEnsuredUnitOfWork uow;
+        private readonly IDomainUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public NoteController(IOwnerEnsuredUnitOfWork uow, IMapper mapper)
+        public NoteController(IDomainUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
             this.mapper = mapper;
