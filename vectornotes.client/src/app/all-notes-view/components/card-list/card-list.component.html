@@ -18,7 +18,7 @@
 <div class="card-container">
   <mat-card class="card" *ngFor="let item of pagedItems" (click)="openEditorToEditNote(item)">
     <mat-card-title>{{ item.title }}</mat-card-title>
-    <mat-card-content>{{ item.content }}</mat-card-content>
+    <mat-card-content class="content">{{ item.content }}</mat-card-content>
   </mat-card>
 </div>
 
