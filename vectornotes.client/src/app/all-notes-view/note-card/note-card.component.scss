@@ -1,0 +1,10 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-height: 200px;
+}
+
+.content {
+  overflow-y: hidden;
+}

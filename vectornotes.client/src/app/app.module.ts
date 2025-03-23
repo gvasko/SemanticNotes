@@ -22,13 +22,14 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SemanticBrowserComponent } from './semantic-browser/semantic-browser.component';
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
-import { CardListComponent } from './all-notes-view/components/card-list/card-list.component';
+import { CardListComponent } from './all-notes-view/card-list/card-list.component';
 import { QuickNoteEditorComponent } from './quick-note-editor/quick-note-editor.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 // Required for MSAL
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
 import { MsalGuard, MsalInterceptor, MsalBroadcastService, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalGuardConfiguration, MsalRedirectComponent, ProtectedResourceScopes } from '@azure/msal-angular';
+import { NoteCardComponent } from './all-notes-view/note-card/note-card.component';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -86,7 +87,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     SemanticBrowserComponent,
     AllNotesViewComponent,
     CardListComponent,
-    QuickNoteEditorComponent
+    QuickNoteEditorComponent,
+    NoteCardComponent
   ],
   imports: [
     BrowserModule,

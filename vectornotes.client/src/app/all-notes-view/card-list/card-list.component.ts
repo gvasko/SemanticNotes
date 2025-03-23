@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Note } from '../../../model/note';
+import { Note } from '../../model/note';
 import { MatPaginator } from '@angular/material/paginator';
-import { NoteRepositoryService } from '../../../services/note-repository.service';
+import { NoteRepositoryService } from '../../services/note-repository.service';
 import { combineLatest, Subject, Subscription, take } from 'rxjs';
-import { DialogService } from '../../../services/dialog.service';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'lantor-card-list',
@@ -95,7 +95,4 @@ export class CardListComponent implements OnInit, OnDestroy {
     });
   }
 
-  openEditorToEditNote(note: Note) {
-    this.dialogService.openQuickNoteEditor(note);
-  }
 }
