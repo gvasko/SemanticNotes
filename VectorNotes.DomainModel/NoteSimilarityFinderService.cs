@@ -30,38 +30,23 @@ namespace VectorNotes.DomainModel
                 Stopwatch stopWatch = new();
                 stopWatch.Start();
 
-                var text = originalNote.Content;
-                Log.Debug("Search begins: {samplePrefix}", text.Substring(0, Math.Min(16, text.Length)));
+                var originalTextVector = await EnsureTextVectorFromCache(alphabet, originalNote);
 
-                var sampleVector = textVectorBuilder.BuildTextVector(alphabet, text);
-                Log.Debug("Sample vector built.");
+                IList<NoteSimilarityValue> similarityValues = new List<NoteSimilarityValue>();
 
-                NoteSimilarityValue[] similarityValues = new NoteSimilarityValue[maxCount];
-                int i = 0;
-                foreach (var note in await domainUow.GetAllNotesAsync())
+                // TODO: remember toList! or should we introduce it in the domainUoW?
+                var noteList = (await domainUow.GetAllNotesAsync()).ToList();
+
+                foreach (var note in noteList)
                 {
                     if (note.Id == originalNote.Id)
                     {
                         continue;
                     }
 
-                    var textVector = (await domainUow.GetTextVectorFromCacheAsync(note, alphabet))?.Vector;
-
-                    if (textVector == null)
-                    {
-                        Log.Debug("Text vector for '{note}' not found in cache. Calculating...", note.Title);
-                        textVector = textVectorBuilder.BuildTextVector(alphabet, note.Content);
-                        Log.Debug("Text vector for '{note}' generated.", note.Title);
-                        await domainUow.CreateOrUpdateTextVectorInCacheAsync(note, alphabet, textVector);
-                        await domainUow.SaveAsync();
-                        Log.Debug("Text vector for '{note}' stored in cache.", note.Title);
-                    }
-                    else
-                    {
-                        Log.Debug("Text vector for '{note}' loaded from cache.", note.Title);
-                    }
-                    var similarity = textVector.Similarity(sampleVector);
-                    similarityValues[i++] = new NoteSimilarityValue(note.Id, similarity);
+                    HiDimBipolarVector textVector = await EnsureTextVectorFromCache(alphabet, note);
+                    var similarity = textVector.Similarity(originalTextVector);
+                    similarityValues.Add(new NoteSimilarityValue(note.Id, similarity));
                     Log.Debug("Text vector similarity for '{note}' calculated.", note.Title);
                 }
 
@@ -69,9 +54,35 @@ namespace VectorNotes.DomainModel
                 stopWatch.Stop();
                 Log.Debug("Found in {elapsed} ms.", stopWatch.ElapsedMilliseconds);
 
-
-                return new NoteSimilarityResult(similarityValues, stopWatch.ElapsedMilliseconds, GetSignificantCount(similarityValues));
+                var similarityValuesArray = similarityValues.ToArray();
+                var fullSimilarityResult = new NoteSimilarityResult(similarityValuesArray, stopWatch.ElapsedMilliseconds, GetSignificantCount(similarityValuesArray));
+                var firstFewSimilarityResult = new NoteSimilarityResult(
+                    fullSimilarityResult.SimilarityValues.Take(maxCount).ToArray(),
+                    fullSimilarityResult.DurationMillisec,
+                    Math.Min(fullSimilarityResult.SignificantCount, maxCount));
+                return firstFewSimilarityResult;
             });
+        }
+
+        private async Task<HiDimBipolarVector> EnsureTextVectorFromCache(Alphabet alphabet, Note note)
+        {
+            var textVector = (await domainUow.GetTextVectorFromCacheAsync(note, alphabet))?.Vector;
+
+            if (textVector == null)
+            {
+                Log.Debug("Text vector for '{note}' not found in cache. Calculating...", note.Title);
+                textVector = textVectorBuilder.BuildTextVector(alphabet, note.Content);
+                Log.Debug("Text vector for '{note}' generated.", note.Title);
+                await domainUow.CreateOrUpdateTextVectorInCacheAsync(note, alphabet, textVector);
+                await domainUow.SaveAsync();
+                Log.Debug("Text vector for '{note}' stored in cache.", note.Title);
+            }
+            else
+            {
+                Log.Debug("Text vector for '{note}' loaded from cache.", note.Title);
+            }
+
+            return textVector;
         }
 
         private static int GetSignificantCount(NoteSimilarityValue[] similarityValues)

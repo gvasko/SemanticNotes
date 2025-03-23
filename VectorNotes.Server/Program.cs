@@ -54,6 +54,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, StrictUserService>();
 builder.Services.AddScoped<IBasicUnitOfWork, BasicUnitOfWork>();
 builder.Services.AddScoped<IDomainUnitOfWork, DomainUnitOfWork>();
+builder.Services.AddScoped<ITextVectorBuilder, TextVectorBuilder>();
+builder.Services.AddScoped<INoteSimilarityFinderService, NoteSimilarityFinderService>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 

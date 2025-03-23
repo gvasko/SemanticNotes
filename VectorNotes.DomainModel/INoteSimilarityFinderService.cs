@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VectorNotes.DomainModel
 {
-    interface INoteSimilarityFinderService
+    public interface INoteSimilarityFinderService
     {
         Task<NoteSimilarityResult> FindSimilarNotes(Note originalNote, int maxCount);
     }

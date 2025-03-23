@@ -38,8 +38,10 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     this.noteRepositoryService.init().then(() => {
       this.noteRepositoryService.getNote(noteId).then((note) => {
         this.currentNote = note;
-        if (this.currentNote) {
-
+        if (this.currentNote?.id) {
+          this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarNotes) => {
+            this.similarNotes = similarNotes;
+          });
         } else {
           this.similarNotes = this.noteRepositoryService.getNotes().slice(0, 10);
         }

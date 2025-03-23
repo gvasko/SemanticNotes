@@ -4,16 +4,17 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, Subject, throwError } from 'rxjs';
 import { NotesApiService } from './api/notes-api.service';
 import { NotePreview } from '../model/note-preview';
+import { SimilarityApiService } from './api/similarity-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoteRepositoryService {
+  // TODO: unsubscribe?
 
+  constructor(private notesApiService: NotesApiService, private similarityService: SimilarityApiService) { }
 
-  constructor(private notesApiService: NotesApiService) { }
-
-  private notes: NotePreview[] = [];
+  private notesPreview: NotePreview[] = [];
 
   private notesSubject = new Subject<NotePreview[]>();
   private noteUpdateSubject = new Subject<Note>();
@@ -26,7 +27,7 @@ export class NoteRepositoryService {
       this.notesApiService.getAll()
         .subscribe({
           next: (allNotes) => {
-            this.notes = allNotes;
+            this.notesPreview = allNotes;
             this.NotesSubject.next(allNotes);
             resolve();
           },
@@ -39,7 +40,7 @@ export class NoteRepositoryService {
   }
 
   getNotes(): NotePreview[] {
-    return this.notes;
+    return this.notesPreview;
   }
 
   addNote(newNote: Note): Promise<Note> {
@@ -77,9 +78,9 @@ export class NoteRepositoryService {
       this.notesApiService.update(existingNote)
         .subscribe({
           next: (savedNote) => {
-            let index = this.notes.findIndex(note => note.id === savedNote.id);
+            let index = this.notesPreview.findIndex(note => note.id === savedNote.id);
             if (index !== -1) {
-              this.notes[index] = savedNote;
+              this.notesPreview[index] = savedNote;
               this.noteUpdateSubject.next(savedNote);
               resolve(savedNote);
             } else {
@@ -92,6 +93,31 @@ export class NoteRepositoryService {
             reject();
           }
         })
+    });
+  }
+
+  getSimilarNotes(currentNote: Note): Promise<NotePreview[]> {
+    return new Promise((resolve, reject) => {
+      if (!currentNote?.id) {
+        reject();
+        return;
+      }
+      this.similarityService.getSimilarNotes(currentNote.id).subscribe({
+        next: (similarNoteIds: number[]) => {
+          var similarNotes: NotePreview[] = [];
+          similarNoteIds.forEach(id => {
+            const note: NotePreview | undefined = this.notesPreview.find(note => note.id === id);
+            if (note !== undefined) {
+              similarNotes.push(note);
+            }
+          });
+          resolve(similarNotes);
+        },
+        error: (error) => {
+          console.error('Similarity API call error:', error);
+          reject();
+        }
+      });
     });
   }
 
