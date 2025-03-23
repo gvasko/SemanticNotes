@@ -1,10 +1,13 @@
 .card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   max-height: 200px;
+  height: 100%;
 }
 
 .content {
   overflow-y: hidden;
+  //flex-grow: 1;
+  //align-self: flex-start;
 }
