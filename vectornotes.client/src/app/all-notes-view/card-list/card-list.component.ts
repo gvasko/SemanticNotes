@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { NoteRepositoryService } from '../../services/note-repository.service';
 import { combineLatest, Subject, Subscription, take } from 'rxjs';
 import { DialogService } from '../../services/dialog.service';
+import { NotePreview } from '../../model/note-preview';
 
 @Component({
   selector: 'lantor-card-list',
@@ -18,7 +19,7 @@ export class CardListComponent implements OnInit, OnDestroy {
 
   }
 
-  private items: Note[] = [];
+  private items: NotePreview[] = [];
   private filterValue: string = "";
   public filteredItems: Note[] = [];
   public pagedItems: Note[] = [];
@@ -45,7 +46,7 @@ export class CardListComponent implements OnInit, OnDestroy {
     this.noteUpdateSubscription?.unsubscribe();
   }
 
-  initItems(notes: Note[]) {
+  initItems(notes: NotePreview[]) {
     this.items = notes;
     this.filteredItems = [...this.items];
     this.pagedItems = [...this.items.slice(0, 5)];
@@ -69,7 +70,7 @@ export class CardListComponent implements OnInit, OnDestroy {
   private setFilteredItems() {
     this.filteredItems = this.items.filter(item =>
       item.title?.toLowerCase().includes(this.filterValue) ||
-      item.content?.toLowerCase().includes(this.filterValue)
+      item.contentPreview?.toLowerCase().includes(this.filterValue)
     );
   }
 

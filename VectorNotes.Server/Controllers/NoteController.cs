@@ -23,13 +23,34 @@ namespace VectorNotes.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<NoteDto>>> GetAllNotesByUser()
+        public async Task<ActionResult<IList<NotePreviewDto>>> GetAllNotes()
         {
             try
             {
                 var noteList = (await uow.GetAllNotesAsync()).ToList();
-                var noteDtoList = mapper.Map<IList<NoteDto>>(noteList);
+                var noteDtoList = mapper.Map<IList<NotePreviewDto>>(noteList);
                 return Ok(noteDtoList);
+            }
+            catch (InvalidOperationException exc)
+            {
+                // TODO: log
+                return Unauthorized();
+            }
+            catch (Exception exc)
+            {
+                // TODO: log
+                return Problem();
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<NoteDto>> GetNoteById(int id)
+        {
+            try
+            {
+                var note = (await uow.GetNoteByIdAsync(id));
+                var noteDto = mapper.Map<NoteDto>(note);
+                return Ok(noteDto);
             }
             catch (InvalidOperationException exc)
             {

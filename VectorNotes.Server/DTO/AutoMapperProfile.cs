@@ -10,7 +10,7 @@ namespace VectorNotes.Server.DTO
         {
             CreateMap<User, UserInfoDto>().ReverseMap();
             CreateMap<Note, NoteDto>().ReverseMap();
-            CreateMap<Note, NoteListInfoDto>().ForMember(noteDto => noteDto.ContentPreview, opt => opt.MapFrom(note => note.Content.Substring(0, MaxNoteContentLength)));
+            CreateMap<Note, NotePreviewDto>().ForMember(noteDto => noteDto.ContentPreview, opt => opt.MapFrom(note => note.Content.Substring(0, Math.Min(note.Content.Length, MaxNoteContentLength))));
         }
     }
 }
