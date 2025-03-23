@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Note } from '../../model/note';
 import { DialogService } from '../../services/dialog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lantor-note-card',
@@ -12,14 +13,15 @@ import { DialogService } from '../../services/dialog.service';
 export class NoteCardComponent {
   @Input() note: Note;
 
-  constructor(private dialogService: DialogService) {
+  constructor(private router: Router, private dialogService: DialogService) {
     this.note = new Note();
     this.note.title = "";
     this.note.content = "";
   }
 
   openEditorToEditNote() {
-    this.dialogService.openQuickNoteEditor(this.note);
+    //this.dialogService.openQuickNoteEditor(this.note);
+    this.router.navigate(["/browser", this.note.id]);
   }
 
 }

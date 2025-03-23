@@ -1,1 +1,21 @@
-<p>semantic-browser works!</p>
+<div class="semantic-browser">
+  <div class="button-bar">
+    <button mat-button [disabled]="!currentNote" (click)="editButtonClicked()">Edit</button>
+    <button mat-button [disabled]="!currentNote">Copy</button>
+    <button mat-button [disabled]="!currentNote">Delete</button>
+  </div>
+  <div class="content">
+    <div *ngIf="currentNote" class="current-note">
+      <h1>{{currentNote.title}}</h1>
+      <p>{{currentNote.content}}</p>
+    </div>
+    <div *ngIf="!currentNote" class="current-note">
+      <p>Note not found...</p>
+    </div>
+    <div class="similar-note-list">
+      <mat-nav-list>
+        <mat-list-item *ngFor="let item of similarNotes" (click)="similarNoteClicked(item.id)">{{ item.title }}</mat-list-item>
+      </mat-nav-list>
+    </div>
+  </div>
+</div>

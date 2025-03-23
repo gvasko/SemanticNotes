@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'notes', component: AllNotesViewComponent, canActivate: [MsalGuard] },
   { path: 'browser', component: SemanticBrowserComponent, canActivate: [MsalGuard] },
+  { path: 'browser/:id', component: SemanticBrowserComponent, canActivate: [MsalGuard] },
   { path: '**', redirectTo: '/home', pathMatch: 'full' }
 ];
 
