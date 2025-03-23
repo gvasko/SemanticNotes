@@ -3,7 +3,7 @@
   <nav class="nav-links">
     <a mat-button routerLink="/home">Home</a>
     <a mat-button routerLink="/notes">Notes</a>
-    <a mat-button routerLink="/navigator">Navigation</a>
+    <a mat-button routerLink="/browser">Browser</a>
   </nav>
   <span class="spacer mat-h2">
     {{getUserName()}}
@@ -21,7 +21,7 @@
 <div class="mobile-menu" *ngIf="isMenuOpen">
   <a mat-button routerLink="/home">Home</a>
   <a mat-button routerLink="/notes">Notes</a>
-  <a mat-button routerLink="/navigator">Navigation</a>
+  <a mat-button routerLink="/browser">Browser</a>
   <button *ngIf="!isLoggedIn()" mat-button (click)="login()">Login</button>
   <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
 </div>

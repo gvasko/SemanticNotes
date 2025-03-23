@@ -20,7 +20,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
-import { SemanticNavigatorComponent } from './semantic-navigator/semantic-navigator.component';
+import { SemanticBrowserComponent } from './semantic-browser/semantic-browser.component';
 import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component';
 import { CardListComponent } from './all-notes-view/components/card-list/card-list.component';
 import { QuickNoteEditorComponent } from './quick-note-editor/quick-note-editor.component';
@@ -83,7 +83,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     SpinnerComponent,
     NavbarComponent,
     HomeComponent,
-    SemanticNavigatorComponent,
+    SemanticBrowserComponent,
     AllNotesViewComponent,
     CardListComponent,
     QuickNoteEditorComponent
