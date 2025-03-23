@@ -12,7 +12,10 @@ export class DialogService {
 
   openQuickNoteEditor(note: Note | undefined = undefined): MatDialogRef<QuickNoteEditorComponent, any> {
     return this.dialog.open(QuickNoteEditorComponent, {
-      data: note
+      data: note,
+      width: '50vw',
+      minWidth: '600px',
+      height: '75vh'
     });
   }
 }
