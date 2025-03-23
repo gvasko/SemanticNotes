@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { NoteRepositoryService } from '../services/note-repository.service';
 import { Note } from '../model/note';
 import { DialogService } from '../services/dialog.service';
@@ -36,21 +36,34 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     const noteIdParam = this.route.snapshot.paramMap.get("id");
     const noteId = noteIdParam === null ? 0 : +noteIdParam;
     this.noteRepositoryService.init().then(() => {
-      this.noteRepositoryService.getNote(noteId).then((note) => {
-        this.currentNote = note;
-        if (this.currentNote?.id) {
-          this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarNotes) => {
-            this.similarNotes = similarNotes;
-          });
-        } else {
-          this.similarNotes = this.noteRepositoryService.getNotes().slice(0, 10);
-        }
-      });
+      this.initCurrentNote(noteId);
+    });
+
+    this.router.events.subscribe((event) => {
+      if (!(event instanceof NavigationEnd)) {
+        return;
+      }
+      const noteIdParam = this.route.snapshot.paramMap.get("id");
+      const noteId = noteIdParam === null ? 0 : +noteIdParam;
+      this.initCurrentNote(noteId);
     });
   }
 
   ngOnDestroy() {
     this.noteUpdateSubscription?.unsubscribe();
+  }
+
+  initCurrentNote(noteId: number) {
+    this.noteRepositoryService.getNote(noteId).then((note) => {
+      this.currentNote = note;
+      if (this.currentNote?.id) {
+        this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarNotes) => {
+          this.similarNotes = similarNotes;
+        });
+      } else {
+        this.similarNotes = this.noteRepositoryService.getNotes().slice(0, 10);
+      }
+    });
   }
 
   updateCurrentNote(updatedNote: Note) {
