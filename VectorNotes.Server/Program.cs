@@ -1,13 +1,18 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Serilog;
 using VectorNotes.Data;
 using VectorNotes.Data.Infrastructure;
 using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 using VectorNotes.Server.Infrastructure;
 
+Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSerilog(lc => lc.ReadFrom.Configuration(builder.Configuration));
 
 builder.Services.AddHttpContextAccessor();
 
@@ -61,8 +66,16 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<VectorNotesContext>();
+    dbContext.Database.Migrate();
+}
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.UseDeveloperExceptionPage();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,7 +85,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-//app.UseRouting();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
