@@ -2,6 +2,7 @@
   <h1 class="logo">Semantic Notes</h1>
   <nav class="nav-links">
     <a mat-button routerLink="/home">Home</a>
+    <a mat-button routerLink="/insights">Insights</a>
     <a mat-button routerLink="/notes">Notes</a>
     <a mat-button routerLink="/browser">Browser</a>
   </nav>
@@ -20,6 +21,7 @@
 <!-- Responsive Menu -->
 <div class="mobile-menu" *ngIf="isMenuOpen">
   <a mat-button routerLink="/home">Home</a>
+  <a mat-button routerLink="/insights">Insights</a>
   <a mat-button routerLink="/notes">Notes</a>
   <a mat-button routerLink="/browser">Browser</a>
   <button *ngIf="!isLoggedIn()" mat-button (click)="login()">Login</button>

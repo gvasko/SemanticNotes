@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NoteRepositoryService } from '../services/note-repository.service';
 
 @Component({
   selector: 'lantor-home',
@@ -8,22 +7,8 @@ import { NoteRepositoryService } from '../services/note-repository.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent  {
 
-  constructor(private noteRepositoryService: NoteRepositoryService) {
 
-  }
-
-  ngOnInit() {
-    this.noteRepositoryService.init();
-  }
-
-  getNoteCount(): number {
-    return this.noteRepositoryService.getNotes().length;
-  }
-
-  getCachedVectorCount(): number {
-    return 11;
-  }
 
 }

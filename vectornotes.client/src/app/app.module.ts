@@ -34,6 +34,7 @@ import { MsalGuard, MsalInterceptor, MsalBroadcastService, MsalInterceptorConfig
 import { NoteCardComponent } from './all-notes-view/note-card/note-card.component';
 import { CreateTagDialogComponent } from './create-tag-dialog/create-tag-dialog.component';
 import { TagListComponent } from './tag-list/tag-list.component';
+import { InsightComponent } from './insight/insight.component';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -94,7 +95,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     QuickNoteEditorComponent,
     NoteCardComponent,
     CreateTagDialogComponent,
-    TagListComponent
+    TagListComponent,
+    InsightComponent
   ],
   imports: [
     BrowserModule,
