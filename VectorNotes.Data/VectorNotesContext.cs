@@ -25,6 +25,16 @@ namespace VectorNotes.Data
 
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
+            modelBuilder.Entity<Note>(note =>
+            {
+                note.OwnsMany(n => n.Tags, tag =>
+                {
+                    tag.WithOwner().HasForeignKey("NoteId");
+                    tag.Property<int>("Id");
+                    tag.HasKey("Id");
+                });
+            });
+
             modelBuilder.Entity<NoteTextVector>(c =>
             {
                 c.OwnsOne(e => e.Vector, b =>

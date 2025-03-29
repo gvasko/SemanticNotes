@@ -14,10 +14,31 @@ namespace VectorNotes.DomainModel
         public int OwnerId { get; set; }
         public User? Owner { get; set; }
 
+        public List<Tag> Tags { get; init; }
+
         public Note()
         {
             Title = "";
             Content = "";
+            Tags = [];
+        }
+
+        public void AddTag(Tag tag)
+        {
+            var found = Tags.FirstOrDefault(t => t == tag);
+            if (found == null)
+            {
+                Tags.Add(tag);
+            }
+        }
+
+        public void RemoveTag(Tag tag)
+        {
+            var found = Tags.FirstOrDefault(t => t == tag);
+            if (found != null)
+            {
+                Tags.Remove(found);
+            }
         }
     }
 }
