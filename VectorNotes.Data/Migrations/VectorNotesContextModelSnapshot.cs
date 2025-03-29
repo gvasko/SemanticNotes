@@ -186,28 +186,18 @@ namespace VectorNotes.Data.Migrations
 
                     b.OwnsMany("VectorNotes.DomainModel.Tag", "Tags", b1 =>
                         {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<int>("NoteId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(450)");
+
                             b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(450)");
 
-                            b1.HasKey("Id");
+                            b1.HasKey("NoteId", "Name", "Value");
 
-                            b1.HasIndex("NoteId");
-
-                            b1.ToTable("Tag", "vectornotes");
+                            b1.ToTable("Tags", "vectornotes");
 
                             b1.WithOwner()
                                 .HasForeignKey("NoteId");

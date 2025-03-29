@@ -8,8 +8,6 @@ using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 using VectorNotes.Server.Infrastructure;
 
-Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog(lc => lc.ReadFrom.Configuration(builder.Configuration));

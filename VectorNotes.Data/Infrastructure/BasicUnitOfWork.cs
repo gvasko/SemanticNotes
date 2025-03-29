@@ -58,7 +58,7 @@ namespace VectorNotes.Data.Infrastructure
 
         public Task<IQueryable<Note>> GetAllNotesAsync()
         {
-            return Task.FromResult(dbContext.Notes.AsNoTracking());
+            return Task.FromResult(dbContext.Notes.Include(n => n.Tags).AsNoTracking());
         }
 
         public async Task<Alphabet?> GetAlphabetAsync(int id)
@@ -99,9 +99,38 @@ namespace VectorNotes.Data.Infrastructure
 
         public async Task<Note> UpdateNoteAsync(Note note)
         {
-            var updatedNote = dbContext.Notes.Update(note).Entity;
+            var existingNote = await dbContext.Notes
+                .Include(n => n.Tags)
+                .FirstOrDefaultAsync(n => n.Id == note.Id);
+
+            if (existingNote == null)
+            {
+                throw new ArgumentException($"Note not found ({note.Id})");
+            }
+
+            // Update the note properties
+            existingNote.Title = note.Title;
+            existingNote.Content = note.Content;
+
+            // Update the tags
+            var existingTags = existingNote.Tags.ToList();
+            var newTags = note.Tags.Except(existingTags).ToList();
+            var removedTags = existingTags.Except(note.Tags).ToList();
+
+            foreach (var tag in newTags)
+            {
+                existingNote.Tags.Add(tag);
+            }
+
+            foreach (var tag in removedTags)
+            {
+                existingNote.Tags.Remove(tag);
+            }
+
+            dbContext.Notes.Update(existingNote);
             await dbContext.SaveChangesAsync();
-            return updatedNote;
+
+            return existingNote;
         }
 
    }

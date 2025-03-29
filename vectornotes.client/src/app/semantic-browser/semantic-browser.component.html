@@ -3,9 +3,11 @@
     <button mat-button [disabled]="!currentNote" (click)="editButtonClicked()">Edit</button>
     <button mat-button [disabled]="!currentNote">Copy</button>
     <button mat-button [disabled]="!currentNote">Delete</button>
+    <button mat-button [disabled]="!currentNote" (click)="createNewTagClicked()">Create Tag</button>
   </div>
   <div class="content">
     <div *ngIf="currentNote" class="current-note">
+      <lantor-tag-list [tags]="currentNote.tags ?? []" (removeTag)="deleteTag($event)"></lantor-tag-list>
       <h1>{{currentNote.title}}</h1>
       <p>{{currentNote.content}}</p>
     </div>

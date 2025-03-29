@@ -5,6 +5,7 @@ import { catchError, Observable, of, Subject, throwError } from 'rxjs';
 import { NotesApiService } from './api/notes-api.service';
 import { NotePreview } from '../model/note-preview';
 import { SimilarityApiService } from './api/similarity-api.service';
+import { Tag } from '../model/tag';
 
 @Injectable({
   providedIn: 'root'
@@ -119,6 +120,18 @@ export class NoteRepositoryService {
         }
       });
     });
+  }
+
+  addNoteTag(note: Note, tag: Tag): Promise<Note> {
+    note.tags?.push(tag);
+    return this.updateNote(note);
+  }
+
+  removeNoteTag(note: Note, tag: Tag): Promise<Note> {
+    if (note.tags) {
+      note.tags = note.tags.filter(t => t.name !== tag.name && t.value !== tag.value);
+    }
+    return this.updateNote(note);
   }
 
 }

@@ -145,15 +145,25 @@ namespace VectorNotes.DomainModel
 
         public async Task<Note> UpdateNoteAsync(Note updatedNote)
         {
-            var existingNote = await GetNoteByIdAsync(updatedNote.Id) ?? throw new ArgumentException("Note not found");
+            await ValidateNoteAsync(updatedNote);
 
-            existingNote.Title = updatedNote.Title;
-            existingNote.Content = updatedNote.Content;
-
-            var dbNote = await basicUoW.UpdateNoteAsync(existingNote);
+            var dbNote = await basicUoW.UpdateNoteAsync(updatedNote);
 
             await CreateOrUpdateTextVectorWithDefaultAlphabet(dbNote);
             return dbNote;
+        }
+
+        private async Task ValidateNoteAsync(Note updatedNote)
+        {
+            var existingNote = await GetNoteByIdAsync(updatedNote.Id) ?? throw new ArgumentException("Note not found");
+            if (updatedNote.OwnerId == 0 || updatedNote.OwnerId == existingNote.OwnerId)
+            {
+                updatedNote.OwnerId = existingNote.OwnerId;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid owner in note to update");
+            }
         }
 
         Task<IQueryable<Alphabet>> IBasicUnitOfWork.GetAllAlphabetsAsync()

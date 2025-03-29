@@ -1,0 +1,8 @@
+<mat-chip-set aria-label="Tag list">
+  <mat-chip *ngFor="let tag of tags" (removed)="removeTagClicked(tag)">
+    {{tag.name}}: {{tag.value}}
+    <button *ngIf="removeEnabled()" matChipRemove [attr.aria-label]="'remove ' + tag.name">
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </mat-chip>
+</mat-chip-set>

@@ -30,8 +30,8 @@ namespace VectorNotes.Data
                 note.OwnsMany(n => n.Tags, tag =>
                 {
                     tag.WithOwner().HasForeignKey("NoteId");
-                    tag.Property<int>("Id");
-                    tag.HasKey("Id");
+                    tag.HasKey(["NoteId", "Name", "Value"]);
+                    tag.ToTable("Tags");
                 });
             });
 

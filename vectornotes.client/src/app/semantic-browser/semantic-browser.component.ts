@@ -4,6 +4,7 @@ import { NoteRepositoryService } from '../services/note-repository.service';
 import { Note } from '../model/note';
 import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
+import { Tag } from '../model/tag';
 
 @Component({
   selector: 'lantor-semantic-browser',
@@ -79,4 +80,15 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   editButtonClicked() {
     this.dialogService.openQuickNoteEditor(this.currentNote);
   }
+
+  createNewTagClicked() {
+    this.dialogService.openCreateTagDialog(this.currentNote);
+  }
+
+  deleteTag(tag: Tag) {
+    if (!this.currentNote) return;
+
+    this.noteRepositoryService.removeNoteTag(this.currentNote, tag);
+  }
+
 }

@@ -1,0 +1,19 @@
+
+.create-tag-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+.title-input {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.note-input {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
