@@ -5,6 +5,7 @@ import { Note } from '../model/note';
 import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
 import { Tag } from '../model/tag';
+import { NotePreview } from '../model/note-preview';
 
 @Component({
   selector: 'lantor-semantic-browser',
@@ -15,10 +16,12 @@ import { Tag } from '../model/tag';
 })
 export class SemanticBrowserComponent implements OnInit, OnDestroy {
   similarNotes: Note[] = [];
+  similarTags: Tag[] = [];
 
   currentNote: Note | undefined = undefined;
 
   private noteUpdateSubscription: Subscription | undefined;
+  private routerSubscription: Subscription | undefined;
 
   constructor(
     private noteRepositoryService: NoteRepositoryService,
@@ -40,7 +43,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
       this.initCurrentNote(noteId);
     });
 
-    this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (!(event instanceof NavigationEnd)) {
         return;
       }
@@ -52,6 +55,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.noteUpdateSubscription?.unsubscribe();
+    this.routerSubscription?.unsubscribe();
   }
 
   initCurrentNote(noteId: number) {
@@ -60,11 +64,25 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
       if (this.currentNote?.id) {
         this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarNotes) => {
           this.similarNotes = similarNotes;
+          this.similarTags = this.generateTagList(similarNotes);
         });
       } else {
-        this.similarNotes = this.noteRepositoryService.getNotes().slice(0, 10);
+        this.similarNotes = [];
+        this.similarTags = [];
       }
     });
+  }
+
+  generateTagList(notes: NotePreview[]): Tag[] {
+    const tagSet = new Set<Tag>();
+
+    notes.forEach(note => {
+      note.tags?.forEach(tag => {
+        tagSet.add(tag);
+      });
+    });
+
+    return Array.from(tagSet);    
   }
 
   updateCurrentNote(updatedNote: Note) {
