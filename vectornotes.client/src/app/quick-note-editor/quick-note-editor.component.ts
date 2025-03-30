@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Note } from '../model/note';
 import { NoteRepositoryService } from '../services/note-repository.service';
+import { Tag } from '../model/tag';
 
 @Component({
   selector: 'lantor-note-editor',
@@ -21,7 +22,8 @@ export class QuickNoteEditorComponent implements OnInit {
   public formGroup = new FormGroup({
     id: new FormControl(0),
     title: new FormControl(""),
-    content: new FormControl("")
+    content: new FormControl(""),
+    tags: new FormControl<Tag[]>([])
   });
 
   public ngOnInit() {
