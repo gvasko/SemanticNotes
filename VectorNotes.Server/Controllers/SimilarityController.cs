@@ -37,8 +37,8 @@ namespace VectorNotes.Server.Controllers
 
                 var result = await simService.FindSimilarNotes(note, 10);
                 var resultIntList = result.SimilarityValues.Select(sv => sv.NoteId).ToArray();
-                var significantItemsOnly = resultIntList.Take(Math.Min(result.SignificantCount, 1));
-                return Ok(significantItemsOnly);
+                //var significantItemsOnly = resultIntList.Take(Math.Min(result.SignificantCount, 1));
+                return Ok(resultIntList);
             }
             catch (InvalidOperationException exc)
             {

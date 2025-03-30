@@ -16,7 +16,7 @@ import { NotePreview } from '../model/note-preview';
 })
 export class SemanticBrowserComponent implements OnInit, OnDestroy {
   similarNotes: Note[] = [];
-  similarTags: Tag[] = [];
+  similarTags: string[] = [];
 
   currentNote: Note | undefined = undefined;
 
@@ -73,12 +73,12 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     });
   }
 
-  generateTagList(notes: NotePreview[]): Tag[] {
-    const tagSet = new Set<Tag>();
+  generateTagList(notes: NotePreview[]): string[] {
+    const tagSet = new Set<string>();
 
     notes.forEach(note => {
       note.tags?.forEach(tag => {
-        tagSet.add(tag);
+        tagSet.add(`${tag.name}: ${tag.value}`);
       });
     });
 
