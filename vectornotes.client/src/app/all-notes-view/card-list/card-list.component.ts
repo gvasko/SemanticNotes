@@ -5,6 +5,7 @@ import { NoteRepositoryService } from '../../services/note-repository.service';
 import { combineLatest, Subject, Subscription, take } from 'rxjs';
 import { DialogService } from '../../services/dialog.service';
 import { NotePreview } from '../../model/note-preview';
+import { PaginatorService } from '../services/paginator.service';
 
 @Component({
   selector: 'lantor-card-list',
@@ -15,7 +16,10 @@ import { NotePreview } from '../../model/note-preview';
 })
 export class CardListComponent implements OnInit, OnDestroy {
 
-  constructor(private dialogService: DialogService, private noteRepositoryService: NoteRepositoryService) {
+  constructor(
+    private paginatorService: PaginatorService,
+    private dialogService: DialogService,
+    private noteRepositoryService: NoteRepositoryService) {
 
   }
 
@@ -46,12 +50,21 @@ export class CardListComponent implements OnInit, OnDestroy {
     this.noteUpdateSubscription?.unsubscribe();
   }
 
+  get pageSize(): number {
+    return this.paginatorService.pageSize;
+  }
+
+  get pageSizeOptions(): number[] {
+    return this.paginatorService.pageSizeOptions;
+  }
+
   initItems(notes: NotePreview[]) {
     this.items = notes;
     this.filteredItems = [...this.items];
-    this.pagedItems = [...this.items.slice(0, 5)];
+    const startIndex = this.paginatorService.pageSize * this.paginatorService.pageIndex;
+    this.pagedItems = [...this.items.slice(startIndex, startIndex + this.paginatorService.pageSize)];
     this.paginator.length = this.filteredItems.length;
-    this.paginator.firstPage();
+    this.paginator.pageIndex = this.paginatorService.pageIndex;
     this.notesUpdated.next(notes.length);
   }
 
@@ -75,6 +88,8 @@ export class CardListComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: any) {
+    this.paginatorService.pageIndex = event.pageIndex;
+    this.paginatorService.pageSize = event.pageSize;
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
     this.pagedItems = this.filteredItems.slice(startIndex, endIndex);
