@@ -24,7 +24,7 @@ namespace VectorNotes.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<int[]>> GetSimilarNotes(int id)
+        public async Task<ActionResult<NoteSimilarityResultDto>> GetSimilarNotes(int id)
         {
             var note = (await uow.GetNoteByIdAsync(id));
 
@@ -34,9 +34,8 @@ namespace VectorNotes.Server.Controllers
             }
 
             var result = await simService.FindSimilarNotes(note, 10);
-            var resultIntList = result.SimilarityValues.Select(sv => sv.NoteId).ToArray();
-            //var significantItemsOnly = resultIntList.Take(Math.Min(result.SignificantCount, 1));
-            return Ok(resultIntList);
+            var resultDto = mapper.Map<NoteSimilarityResultDto>(result);
+            return Ok(resultDto);
         }
 
 

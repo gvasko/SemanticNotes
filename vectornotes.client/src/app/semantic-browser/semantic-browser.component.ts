@@ -15,8 +15,9 @@ import { NotePreview } from '../model/note-preview';
   styleUrl: './semantic-browser.component.scss'
 })
 export class SemanticBrowserComponent implements OnInit, OnDestroy {
-  similarNotes: Note[] = [];
+  similarNotes: NotePreview[] = [];
   similarTags: string[] = [];
+  similarityValues: number[] = [];
 
   currentNote: Note | undefined = undefined;
 
@@ -62,27 +63,16 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     this.noteRepositoryService.getNote(noteId).then((note) => {
       this.currentNote = note;
       if (this.currentNote?.id) {
-        this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarNotes) => {
-          this.similarNotes = similarNotes;
-          this.similarTags = this.generateTagList(similarNotes);
+        this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarityResult) => {
+          this.similarNotes = similarityResult.similarNotePreviews;
+          this.similarTags = similarityResult.similarTags.map(st => `${st.name}: ${st.value} [${st.similarityValue.toFixed(2) }]`)
         });
       } else {
         this.similarNotes = [];
         this.similarTags = [];
+        this.similarityValues = [];
       }
     });
-  }
-
-  generateTagList(notes: NotePreview[]): string[] {
-    const tagSet = new Set<string>();
-
-    notes.forEach(note => {
-      note.tags?.forEach(tag => {
-        tagSet.add(`${tag.name}: ${tag.value}`);
-      });
-    });
-
-    return Array.from(tagSet);    
   }
 
   updateCurrentNote(updatedNote: Note) {

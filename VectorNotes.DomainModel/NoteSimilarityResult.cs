@@ -12,12 +12,12 @@ namespace VectorNotes.DomainModel
         public double Value { get; init; } = value;
     }
 
-    public readonly struct NoteSimilarityResult
+    public class NoteSimilarityResult
     {
         public NoteSimilarityResult(NoteSimilarityValue[] similarityValues, long duration, int significantCount = 0)
         {
             var values = similarityValues;
-            Array.Sort(values, (x, y) => x.Value < y.Value ? 1 : x.Value > y.Value ? -1 : 0);
+            Array.Sort(similarityValues, (x, y) => y.Value.CompareTo(x.Value));
 
             SimilarityValues = values;
             DurationMillisec = duration;

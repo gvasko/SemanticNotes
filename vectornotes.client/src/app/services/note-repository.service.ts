@@ -6,6 +6,7 @@ import { NotesApiService } from './api/notes-api.service';
 import { NotePreview } from '../model/note-preview';
 import { SimilarityApiService } from './api/similarity-api.service';
 import { Tag } from '../model/tag';
+import { ExtendedNoteSimilarityResult, NoteSimilarityResult } from '../model/note-similarity-result';
 
 @Injectable({
   providedIn: 'root'
@@ -97,22 +98,16 @@ export class NoteRepositoryService {
     });
   }
 
-  getSimilarNotes(currentNote: Note): Promise<NotePreview[]> {
+  getSimilarNotes(currentNote: Note): Promise<ExtendedNoteSimilarityResult> {
     return new Promise((resolve, reject) => {
       if (!currentNote?.id) {
         reject();
         return;
       }
       this.similarityService.getSimilarNotes(currentNote.id).subscribe({
-        next: (similarNoteIds: number[]) => {
-          var similarNotes: NotePreview[] = [];
-          similarNoteIds.forEach(id => {
-            const note: NotePreview | undefined = this.notesPreview.find(note => note.id === id);
-            if (note !== undefined) {
-              similarNotes.push(note);
-            }
-          });
-          resolve(similarNotes);
+        next: (similarityResult: NoteSimilarityResult) => {
+          const extendedResult = new ExtendedNoteSimilarityResult(similarityResult, this.notesPreview);
+          resolve(extendedResult);
         },
         error: (error) => {
           console.error('Similarity API call error:', error);
