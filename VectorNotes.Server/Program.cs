@@ -7,6 +7,7 @@ using VectorNotes.Data.Infrastructure;
 using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 using VectorNotes.Server.Infrastructure;
+using VectorNotes.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +82,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseRouting();

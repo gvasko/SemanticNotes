@@ -25,87 +25,35 @@ namespace VectorNotes.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<NotePreviewDto>>> GetAllNotes()
         {
-            try
-            {
-                var noteList = (await uow.GetAllNotesAsync()).ToList();
-                var noteDtoList = mapper.Map<IList<NotePreviewDto>>(noteList);
-                return Ok(noteDtoList);
-            }
-            catch (InvalidOperationException exc)
-            {
-                // TODO: log
-                return Unauthorized();
-            }
-            catch (Exception exc)
-            {
-                // TODO: log
-                return Problem();
-            }
+            var noteList = (await uow.GetAllNotesAsync()).ToList();
+            var noteDtoList = mapper.Map<IList<NotePreviewDto>>(noteList);
+            return Ok(noteDtoList);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<NoteDto>> GetNoteById(int id)
         {
-            try
-            {
-                var note = (await uow.GetNoteByIdAsync(id));
-                var noteDto = mapper.Map<NoteDto>(note);
-                return Ok(noteDto);
-            }
-            catch (InvalidOperationException exc)
-            {
-                // TODO: log
-                return Unauthorized();
-            }
-            catch (Exception exc)
-            {
-                // TODO: log
-                return Problem();
-            }
+            var note = (await uow.GetNoteByIdAsync(id));
+            var noteDto = mapper.Map<NoteDto>(note);
+            return Ok(noteDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<NoteDto>> CreateNote(NoteDto newNote)
         {
-            try
-            {
-                var note = mapper.Map<Note>(newNote);
-                var dbNote = await uow.CreateNoteAsync(note);
-                await uow.SaveAsync();
-                return Ok(mapper.Map<NoteDto>(dbNote));
-            }
-            catch (InvalidOperationException exc)
-            {
-                // TODO: log
-                return Unauthorized();
-            }
-            catch (Exception exc)
-            {
-                // TODO: log
-                return Problem();
-            }
+            var note = mapper.Map<Note>(newNote);
+            var dbNote = await uow.CreateNoteAsync(note);
+            await uow.SaveAsync();
+            return Ok(mapper.Map<NoteDto>(dbNote));
         }
 
         [HttpPut]
         public async Task<ActionResult<NoteDto>> UpdateNote(NoteDto updatedNote)
         {
-            try
-            {
-                var note = mapper.Map<Note>(updatedNote);
-                var dbNote = await uow.UpdateNoteAsync(note);
-                await uow.SaveAsync();
-                return Ok(mapper.Map<NoteDto>(dbNote));
-            }
-            catch (InvalidOperationException exc)
-            {
-                // TODO: log
-                return Unauthorized();
-            }
-            catch (Exception exc)
-            {
-                // TODO: log
-                return Problem();
-            }
+            var note = mapper.Map<Note>(updatedNote);
+            var dbNote = await uow.UpdateNoteAsync(note);
+            await uow.SaveAsync();
+            return Ok(mapper.Map<NoteDto>(dbNote));
         }
     }
 }

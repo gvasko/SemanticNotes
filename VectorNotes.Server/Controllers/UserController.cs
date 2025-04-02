@@ -24,22 +24,9 @@ namespace VectorNotes.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<UserInfoDto>> EnsureCreated()
         {
-            try
-            {
-                var user = await userService.GetCurrentUserAsync();
-                var userDto = mapper.Map<UserInfoDto>(user);
-                return Ok(userDto);
-            }
-            catch (InvalidOperationException exc)
-            {
-                // TODO: log
-                return Unauthorized();
-            }
-            catch (Exception exc)
-            {
-                // TODO: log
-                return Problem();
-            }
+            var user = await userService.GetCurrentUserAsync();
+            var userDto = mapper.Map<UserInfoDto>(user);
+            return Ok(userDto);
         }
     }
 }

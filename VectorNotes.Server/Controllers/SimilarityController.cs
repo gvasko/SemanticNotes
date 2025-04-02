@@ -26,30 +26,17 @@ namespace VectorNotes.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<int[]>> GetSimilarNotes(int id)
         {
-            try
-            {
-                var note = (await uow.GetNoteByIdAsync(id));
+            var note = (await uow.GetNoteByIdAsync(id));
 
-                if (note == null)
-                {
-                    return Ok(Array.Empty<int>().ToList());
-                }
+            if (note == null)
+            {
+                return Ok(Array.Empty<int>().ToList());
+            }
 
-                var result = await simService.FindSimilarNotes(note, 10);
-                var resultIntList = result.SimilarityValues.Select(sv => sv.NoteId).ToArray();
-                //var significantItemsOnly = resultIntList.Take(Math.Min(result.SignificantCount, 1));
-                return Ok(resultIntList);
-            }
-            catch (InvalidOperationException exc)
-            {
-                // TODO: log
-                return Unauthorized();
-            }
-            catch (Exception exc)
-            {
-                // TODO: log
-                return Problem();
-            }
+            var result = await simService.FindSimilarNotes(note, 10);
+            var resultIntList = result.SimilarityValues.Select(sv => sv.NoteId).ToArray();
+            //var significantItemsOnly = resultIntList.Take(Math.Min(result.SignificantCount, 1));
+            return Ok(resultIntList);
         }
 
 

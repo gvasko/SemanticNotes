@@ -22,11 +22,11 @@ namespace VectorNotes.Server.Infrastructure
 
         private async Task<User> EnsureUserExists()
         {
-            var user = (httpContextAccessor.HttpContext?.User) ?? throw new InvalidOperationException("User data cannot be found in HttpContextAccessor");
+            var user = (httpContextAccessor.HttpContext?.User) ?? throw new UnauthorizedAccessException("User data cannot be found in HttpContextAccessor");
 
-            string? name = user.FindAll("name").Select(r => r.Value).ToList().FirstOrDefault();
-            string email = user.FindAll(ClaimTypes.Email).Select(r => r.Value).ToList().FirstOrDefault()
-                ?? throw new InvalidOperationException("Email cannot be found in HttpContextAccessor");
+            string? name = user.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
+            string email = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
+                ?? throw new UnauthorizedAccessException("Email cannot be found in HttpContextAccessor");
 
             name ??= email;
 
@@ -35,7 +35,7 @@ namespace VectorNotes.Server.Infrastructure
 
             if (existingUser == null)
             {
-                throw new InvalidOperationException("User cannot be found or created");
+                throw new UnauthorizedAccessException("User cannot be found or created");
             }
 
             return existingUser;
