@@ -6,6 +6,7 @@ import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
 import { Tag } from '../model/tag';
 import { NotePreview } from '../model/note-preview';
+import { SimilarNotePreview } from '../model/note-similarity-result';
 
 @Component({
   selector: 'lantor-semantic-browser',
@@ -15,7 +16,7 @@ import { NotePreview } from '../model/note-preview';
   styleUrl: './semantic-browser.component.scss'
 })
 export class SemanticBrowserComponent implements OnInit, OnDestroy {
-  similarNotes: NotePreview[] = [];
+  similarNotes: SimilarNotePreview[] = [];
   similarTags: string[] = [];
   similarityValues: number[] = [];
 

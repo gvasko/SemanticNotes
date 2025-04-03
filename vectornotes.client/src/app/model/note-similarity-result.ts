@@ -49,10 +49,16 @@ export class ExtendedNoteSimilarityResult extends NoteSimilarityResult {
         this.similarNotePreviews.push(
           new SimilarNotePreview(note, similarityValue.value));
         note.tags?.forEach(tag => {
-          this.similarTags.push(
-            new SimilarTag(tag, similarityValue.value));
+          const tagAlreadyAdded = this.similarTags.find(t => t.name === tag.name);
+          if (tagAlreadyAdded) {
+            if (tagAlreadyAdded.similarityValue < similarityValue.value) {
+              console.log("Error: similarity values in wrong order");
+            }
+          } else {
+            this.similarTags.push(
+              new SimilarTag(tag, similarityValue.value));
+          }
         });
-        // TODO: remove duplicate tags, keep the highest similarity value
       }
     });
 
