@@ -66,7 +66,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
       if (this.currentNote?.id) {
         this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarityResult) => {
           this.similarNotes = similarityResult.similarNotePreviews;
-          this.similarTags = similarityResult.similarTags.map(st => `${st.name}: ${st.value} [${st.similarityValue.toFixed(2) }]`)
+          this.similarTags = similarityResult.similarTags.map(st => `[${st.similarityValue.toFixed(2) }] ${st.name}: ${st.value}`)
         });
       } else {
         this.similarNotes = [];

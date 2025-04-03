@@ -23,7 +23,7 @@
         </mat-tab>
         <mat-tab label="Notes">
           <mat-nav-list>
-            <mat-list-item *ngFor="let note of similarNotes" (click)="similarNoteClicked(note.id)">{{ note.title }}[{{note.similarityValue.toFixed(2)}}]</mat-list-item>
+            <mat-list-item *ngFor="let note of similarNotes" (click)="similarNoteClicked(note.id)">[{{note.similarityValue.toFixed(2)}}] {{ note.title }}</mat-list-item>
           </mat-nav-list>
         </mat-tab>
       </mat-tab-group>
