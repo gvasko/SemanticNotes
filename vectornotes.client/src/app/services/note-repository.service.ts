@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Note } from '../model/note';
-import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, of, Subject, throwError } from 'rxjs';
 import { NotesApiService } from './api/notes-api.service';
 import { NotePreview } from '../model/note-preview';
 import { SimilarityApiService } from './api/similarity-api.service';

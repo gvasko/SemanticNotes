@@ -5,7 +5,6 @@ import { Note } from '../model/note';
 import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
 import { Tag } from '../model/tag';
-import { NotePreview } from '../model/note-preview';
 import { SimilarNotePreview } from '../model/note-similarity-result';
 
 @Component({
@@ -63,22 +62,27 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   initCurrentNote(noteId: number) {
     this.noteRepositoryService.getNote(noteId).then((note) => {
       this.currentNote = note;
-      if (this.currentNote?.id) {
-        this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarityResult) => {
-          this.similarNotes = similarityResult.similarNotePreviews;
-          this.similarTags = similarityResult.similarTags.map(st => `[${st.similarityValue.toFixed(2) }] ${st.name}: ${st.value}`)
-        });
-      } else {
-        this.similarNotes = [];
-        this.similarTags = [];
-        this.similarityValues = [];
-      }
+      this.updateSimilarities();
     });
+  }
+
+  updateSimilarities() {
+    if (this.currentNote?.id) {
+      this.noteRepositoryService.getSimilarNotes(this.currentNote).then((similarityResult) => {
+        this.similarNotes = similarityResult.similarNotePreviews;
+        this.similarTags = similarityResult.similarTags.map(st => `[${st.similarityValue.toFixed(2)}] ${st.name}: ${st.value}`)
+      });
+    } else {
+      this.similarNotes = [];
+      this.similarTags = [];
+      this.similarityValues = [];
+    }
   }
 
   updateCurrentNote(updatedNote: Note) {
     if (updatedNote.id === this.currentNote?.id) {
       this.currentNote = updatedNote;
+      this.updateSimilarities();
     }
   }
 
