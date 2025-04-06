@@ -20,6 +20,7 @@ export class NoteMapComponent implements AfterViewInit, OnDestroy {
   private draw: any;
   private animationFrameId: number | undefined;
   private needsRedraw = false;
+  private frame = 0;
 
   constructor(private noteRepo: NoteRepositoryService) {
 
@@ -42,6 +43,7 @@ export class NoteMapComponent implements AfterViewInit, OnDestroy {
 
   redraw() {
     this.needsRedraw = true;
+    this.frame = 0;
   }
 
   private initNotePoints(radius = 300): NotePoint[] {
@@ -119,9 +121,12 @@ export class NoteMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private animate() {
+    if (this.frame > 1000) return;
+
     this.notePoints = this.needsRedraw ? this.initNotePoints() : this.updateNotePoints();
     this.needsRedraw = false;
     this.updateSVG();
     this.animationFrameId = requestAnimationFrame(() => this.animate());
+    this.frame++;
   }
 }
