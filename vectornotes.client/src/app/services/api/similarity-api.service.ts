@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take, catchError, throwError } from 'rxjs';
 import { NoteSimilarityResult } from '../../model/note-similarity-result';
+import { SimilarityMatrix } from '../../model/similarity-matrix';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,10 @@ export class SimilarityApiService {
 
   getSimilarNotes(id: number): Observable<NoteSimilarityResult> {
     return this.http.get<NoteSimilarityResult>(`${this.baseUrl}/${id}`).pipe(take(1), catchError(this.handleError));
+  }
+
+  getSimilarityMatrix(): Observable<SimilarityMatrix> {
+    return this.http.get<SimilarityMatrix>(`${this.baseUrl}`).pipe(take(1), catchError(this.handleError));
   }
 
   protected handleError(error: HttpErrorResponse) {

@@ -118,20 +118,32 @@ export class NoteRepositoryService {
   }
 
   getSimilarityMatrix(): Promise<SimilarityMatrix> {
-    const fakeMatrix = new SimilarityMatrix();
-    fakeMatrix.noteIds = [1, 2, 3, 4, 5, 6, 7];
-    fakeMatrix.noteNames = ["English", "Slovakian", "Chech", "German", "Slovenian", "French", "Dutch"];
-    fakeMatrix.values = [
-      [1.0, 0.3, 0.4, 0.8, 0.3, 0.8, 0.8],
-      [0.3, 1.0, 0.8, 0.4, 0.7, 0.2, 0.3],
-      [0.4, 0.8, 1.0, 0.2, 0.8, 0.2, 0.2],
-      [0.8, 0.4, 0.2, 1.0, 0.3, 0.7, 0.8],
-      [0.3, 0.7, 0.8, 0.3, 1.0, 0.2, 0.3],
-      [0.8, 0.2, 0.2, 0.7, 0.2, 1.0, 0.7],
-      [0.8, 0.3, 0.2, 0.8, 0.3, 0.7, 1.0]
-    ];
+    // TODO: find a better solution for chaining
     return new Promise((resolve, reject) => {
-      resolve(fakeMatrix);
+      if (this.notesPreview.length === 0) {
+        this.init().then(() => {
+          this.getSimilarityMatrixPromiseImpl(resolve, reject);
+        })
+      } else {
+        this.getSimilarityMatrixPromiseImpl(resolve, reject);
+      }
+    });
+  }
+
+  private getSimilarityMatrixPromiseImpl = (resolve: (sm: SimilarityMatrix) => void, reject: (reason?: any) => void) => {
+    this.similarityService.getSimilarityMatrix().subscribe({
+      next: (similarityMatrix: SimilarityMatrix) => {
+        similarityMatrix.noteNames = [];
+        similarityMatrix.noteIds.forEach(noteId => {
+          const found = this.notesPreview.find(n => n.id === noteId);
+          similarityMatrix.noteNames.push(found?.title ?? "Unknown");
+        });
+        resolve(similarityMatrix);
+      },
+      error: (error) => {
+        console.error('Similarity API call error:', error);
+        reject();
+      }
     });
   }
 

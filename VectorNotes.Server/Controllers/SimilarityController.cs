@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using VectorNotes.DomainModel;
 using VectorNotes.Server.DTO;
 
@@ -26,7 +27,7 @@ namespace VectorNotes.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<NoteSimilarityResultDto>> GetSimilarNotes(int id)
         {
-            var note = (await uow.GetNoteByIdAsync(id));
+            var note = await uow.GetNoteByIdAsync(id);
 
             if (note == null)
             {
@@ -36,6 +37,33 @@ namespace VectorNotes.Server.Controllers
             var result = await simService.FindSimilarNotes(note, 10);
             var resultDto = mapper.Map<NoteSimilarityResultDto>(result);
             return Ok(resultDto);
+        }
+
+        [HttpGet]
+        public async Task<SimilarityMatrixDto> GetSimilarityMatrix()
+        {
+            var notes = (await uow.GetAllNotesAsync()).ToList();
+
+            var result = new SimilarityMatrixDto()
+            {
+                NoteIds = [.. notes.Select(n => n.Id)],
+                Values = new double[notes.Count][]
+            };
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                Log.Information("Generating matrix row {i}/{n}", i, notes.Count);
+                result.Values[i] = new double[notes.Count];
+                result.Values[i][i] = 1.0;
+                var vector1 = await simService.GetTextVector(notes[i]);
+                for (int j = 0; j < i; j++)
+                {
+                    var vector2 = await simService.GetTextVector(notes[j]);
+                    result.Values[i][j] = result.Values[j][i] = vector1.Similarity(vector2);
+                }
+            }
+
+            return result;
         }
 
 

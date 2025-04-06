@@ -111,6 +111,10 @@ namespace VectorNotes.DomainModel
             return count;
         }
 
+        public async Task<HiDimBipolarVector> GetTextVector(Note note)
+        {
+            return await EnsureTextVectorFromCache(await domainUow.GetDefaultAlphabetAsync(), note);
+        }
     }
 
 }
