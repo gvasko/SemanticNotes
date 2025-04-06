@@ -5,6 +5,7 @@
     <a mat-button routerLink="/insights">Insights</a>
     <a mat-button routerLink="/notes">Notes</a>
     <a mat-button routerLink="/browser">Browser</a>
+    <a mat-button routerLink="/map">Map</a>
   </nav>
   <span class="spacer mat-h2">
     {{getUserName()}}
@@ -24,6 +25,7 @@
   <a mat-button routerLink="/insights">Insights</a>
   <a mat-button routerLink="/notes">Notes</a>
   <a mat-button routerLink="/browser">Browser</a>
+  <a mat-button routerLink="/map">Map</a>
   <button *ngIf="!isLoggedIn()" mat-button (click)="login()">Login</button>
   <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
 </div>

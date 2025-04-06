@@ -6,6 +6,7 @@ import { NotePreview } from '../model/note-preview';
 import { SimilarityApiService } from './api/similarity-api.service';
 import { Tag } from '../model/tag';
 import { ExtendedNoteSimilarityResult, NoteSimilarityResult } from '../model/note-similarity-result';
+import { SimilarityMatrix } from '../model/similarity-matrix';
 
 @Injectable({
   providedIn: 'root'
@@ -113,6 +114,24 @@ export class NoteRepositoryService {
           reject();
         }
       });
+    });
+  }
+
+  getSimilarityMatrix(): Promise<SimilarityMatrix> {
+    const fakeMatrix = new SimilarityMatrix();
+    fakeMatrix.noteIds = [1, 2, 3, 4, 5, 6, 7];
+    fakeMatrix.noteNames = ["English", "Slovakian", "Chech", "German", "Slovenian", "French", "Dutch"];
+    fakeMatrix.values = [
+      [1.0, 0.3, 0.4, 0.8, 0.3, 0.8, 0.8],
+      [0.3, 1.0, 0.8, 0.4, 0.7, 0.2, 0.3],
+      [0.4, 0.8, 1.0, 0.2, 0.8, 0.2, 0.2],
+      [0.8, 0.4, 0.2, 1.0, 0.3, 0.7, 0.8],
+      [0.3, 0.7, 0.8, 0.3, 1.0, 0.2, 0.3],
+      [0.8, 0.2, 0.2, 0.7, 0.2, 1.0, 0.7],
+      [0.8, 0.3, 0.2, 0.8, 0.3, 0.7, 1.0]
+    ];
+    return new Promise((resolve, reject) => {
+      resolve(fakeMatrix);
     });
   }
 

@@ -5,6 +5,7 @@ import { AllNotesViewComponent } from './all-notes-view/all-notes-view.component
 import { SemanticBrowserComponent } from './semantic-browser/semantic-browser.component';
 import { MsalGuard, MsalRedirectComponent } from '@azure/msal-angular';
 import { InsightComponent } from './insight/insight.component';
+import { NoteMapComponent } from './note-map/note-map.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'notes', component: AllNotesViewComponent, canActivate: [MsalGuard] },
   { path: 'browser', component: SemanticBrowserComponent, canActivate: [MsalGuard] },
   { path: 'browser/:id', component: SemanticBrowserComponent, canActivate: [MsalGuard] },
+  { path: 'map', component: NoteMapComponent, canActivate: [MsalGuard] },
   { path: '**', redirectTo: '/home', pathMatch: 'full' }
 ];
 

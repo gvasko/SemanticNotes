@@ -25,6 +25,7 @@
     "@angular/router": "^19.0.0",
     "@azure/msal-angular": "^4.0.6",
     "@azure/msal-browser": "^4.7.0",
+    "@svgdotjs/svg.js": "^3.2.4",
     "jest-editor-support": "*",
     "run-script-os": "*",
     "rxjs": "~7.8.0",
