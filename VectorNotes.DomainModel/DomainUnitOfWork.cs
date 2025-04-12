@@ -21,8 +21,9 @@ namespace VectorNotes.DomainModel
 
         public async Task CreateOrUpdateTextVectorInCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector)
         {
+            var noteCollection = await basicUoW.GetNoteCollectionByIdAsync(note.NoteCollectionId) ?? throw new ArgumentException($"Invalid note collection");
             var user = await userService.GetCurrentUserAsync();
-            if (user.Id != note.OwnerId)
+            if (user.Id != noteCollection.OwnerId)
             {
                 throw new ArgumentException("Unknown note object");
             }
@@ -43,9 +44,13 @@ namespace VectorNotes.DomainModel
 
         public async Task<Note> CreateNoteAsync(Note note)
         {
+            var noteCollection = await basicUoW.GetNoteCollectionByIdAsync(note.NoteCollectionId) ?? throw new ArgumentException($"Invalid note collection");
             var user = await userService.GetCurrentUserAsync();
-            note.OwnerId = user.Id;
-            note.Owner = null;
+            if (noteCollection.OwnerId != user.Id)
+            {
+                throw new ArgumentException("Invalid owner");
+            }
+
             var dbNote = await basicUoW.CreateNoteAsync(note);
 
             await CreateOrUpdateTextVectorWithDefaultAlphabet(dbNote);
@@ -75,7 +80,7 @@ namespace VectorNotes.DomainModel
         {
             User user = await userService.GetCurrentUserAsync();
             var allNotes = await basicUoW.GetAllNotesAsync();
-            return allNotes.Where(note => note.OwnerId == user.Id);
+            return allNotes.Where(note => note.NoteCollection != null && note.NoteCollection.OwnerId == user.Id);
         }
 
         public async Task<Alphabet?> GetAlphabetAsync(int id)
@@ -112,9 +117,12 @@ namespace VectorNotes.DomainModel
         public async Task<NoteTextVector?> GetTextVectorFromCacheAsync(Note note, Alphabet alphabet)
         {
             var user = await userService.GetCurrentUserAsync();
-            if (note.OwnerId != user.Id)
+
+            var noteCollection = await basicUoW.GetNoteCollectionByIdAsync(note.NoteCollectionId) ?? throw new ArgumentException($"Invalid collection {note.NoteCollectionId} on note {note.Id}");
+
+            if (noteCollection.OwnerId != user.Id)
             {
-                throw new ArgumentException($"Invalid owner {note.OwnerId} on note {note.Id}");
+                throw new ArgumentException($"Invalid owner {noteCollection.OwnerId} on noteCollection {noteCollection.Id}");
             }
             if (alphabet.OwnerId != user.Id)
             {
@@ -159,19 +167,47 @@ namespace VectorNotes.DomainModel
         private async Task<Note> ValidateNoteAsync(Note updatedNote)
         {
             var existingNote = await GetNoteByIdAsync(updatedNote.Id) ?? throw new ArgumentException("Note not found");
-            if (updatedNote.OwnerId == 0 || updatedNote.OwnerId == existingNote.OwnerId)
+
+            if (existingNote.NoteCollectionId != updatedNote.NoteCollectionId)
             {
-                updatedNote.OwnerId = existingNote.OwnerId;
-            }
-            else
-            {
-                throw new ArgumentException("Invalid owner in note to update");
+                var existingNoteCollection = await basicUoW.GetNoteCollectionByIdAsync(existingNote.NoteCollectionId) ?? throw new ArgumentException($"Invalid existing note collection");
+                var updatedNoteCollection = await basicUoW.GetNoteCollectionByIdAsync(updatedNote.NoteCollectionId) ?? throw new ArgumentException($"Invalid updated note collection");
+                if (existingNoteCollection.OwnerId != updatedNoteCollection.OwnerId)
+                {
+                    throw new ArgumentException("Invalid owner in note collection to update");
+                }
+
             }
 
             return existingNote;
         }
 
         Task<IQueryable<Alphabet>> IBasicUnitOfWork.GetAllAlphabetsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NoteCollection?> GetNoteCollectionByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IQueryable<NoteCollection>> GetAllNoteCollectionsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NoteCollection> CreateNoteCollectionAsync(NoteCollection noteCollection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NoteCollection> UpdateNoteCollectionAsync(NoteCollection noteCollection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteNoteCollectionByIdAsync(int noteCollectionId)
         {
             throw new NotImplementedException();
         }

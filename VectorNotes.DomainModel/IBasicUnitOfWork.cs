@@ -8,6 +8,12 @@ namespace VectorNotes.DomainModel
 {
     public interface IBasicUnitOfWork
     {
+        Task<NoteCollection?> GetNoteCollectionByIdAsync(int id);
+        Task<IQueryable<NoteCollection>> GetAllNoteCollectionsAsync();
+        Task<NoteCollection> CreateNoteCollectionAsync(NoteCollection noteCollection);
+        Task<NoteCollection> UpdateNoteCollectionAsync(NoteCollection noteCollection);
+        Task DeleteNoteCollectionByIdAsync(int noteCollectionId);
+
         Task<Note?> GetNoteByIdAsync(int id);
         Task<IQueryable<Note>> GetAllNotesAsync();
         Task<Note> CreateNoteAsync(Note note);

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VectorNotes.Data;
 
@@ -10,9 +11,11 @@ using VectorNotes.Data;
 namespace VectorNotes.Data.Migrations
 {
     [DbContext(typeof(VectorNotesContext))]
-    partial class VectorNotesContextModelSnapshot : ModelSnapshot
+    [Migration("20250412202149_AddNoteCollection")]
+    partial class AddNoteCollection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,6 +62,9 @@ namespace VectorNotes.Data.Migrations
                     b.Property<int>("NoteCollectionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -66,6 +72,8 @@ namespace VectorNotes.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NoteCollectionId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Notes", "vectornotes");
                 });
@@ -82,7 +90,7 @@ namespace VectorNotes.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerId")
+                    b.Property<int?>("OwnerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -206,6 +214,11 @@ namespace VectorNotes.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("VectorNotes.DomainModel.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.OwnsMany("VectorNotes.DomainModel.Tag", "Tags", b1 =>
                         {
                             b1.Property<int>("NoteId")
@@ -227,6 +240,8 @@ namespace VectorNotes.Data.Migrations
 
                     b.Navigation("NoteCollection");
 
+                    b.Navigation("Owner");
+
                     b.Navigation("Tags");
                 });
 
@@ -235,8 +250,7 @@ namespace VectorNotes.Data.Migrations
                     b.HasOne("VectorNotes.DomainModel.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Owner");
                 });

@@ -58,7 +58,10 @@ namespace VectorNotes.Data.Infrastructure
 
         public Task<IQueryable<Note>> GetAllNotesAsync()
         {
-            return Task.FromResult(dbContext.Notes.Include(n => n.Tags).AsNoTracking());
+            return Task.FromResult(dbContext.Notes
+                .Include(n => n.Tags)
+                .Include(n => n.NoteCollection)
+                .AsNoTracking());
         }
 
         public async Task<Alphabet?> GetAlphabetAsync(int id)
@@ -133,5 +136,31 @@ namespace VectorNotes.Data.Infrastructure
             return existingNote;
         }
 
-   }
+        public async Task<NoteCollection?> GetNoteCollectionByIdAsync(int id)
+        {
+            return await dbContext.NoteCollections.AsNoTracking().Include(nc => nc.Notes).FirstOrDefaultAsync(nc => nc.Id == id);
+        }
+
+        public Task<IQueryable<NoteCollection>> GetAllNoteCollectionsAsync()
+        {
+            return Task.FromResult(dbContext.NoteCollections.AsNoTracking());
+        }
+
+        public async Task<NoteCollection> CreateNoteCollectionAsync(NoteCollection noteCollection)
+        {
+            var entry = await dbContext.NoteCollections.AddAsync(noteCollection);
+            await dbContext.SaveChangesAsync();
+            return entry.Entity;
+        }
+
+        public Task<NoteCollection> UpdateNoteCollectionAsync(NoteCollection noteCollection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteNoteCollectionByIdAsync(int noteCollectionId)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

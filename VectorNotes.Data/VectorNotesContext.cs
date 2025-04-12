@@ -10,6 +10,7 @@ namespace VectorNotes.Data
     {
         public DbSet<User> Users { get; init; }
         public DbSet<Note> Notes { get; init; }
+        public DbSet<NoteCollection> NoteCollections { get; init; }
         public DbSet<NoteTextVector> NoteTextVectorCache { get; init; }
         public DbSet<Alphabet> Alphabets { get; init; }
 
@@ -33,6 +34,14 @@ namespace VectorNotes.Data
                     tag.HasKey(["NoteId", "Name", "Value"]);
                     tag.ToTable("Tags");
                 });
+            });
+
+            modelBuilder.Entity<NoteCollection>(nc =>
+            {
+                nc.HasOne(nc => nc.Owner)
+                    .WithMany()
+                    .HasForeignKey(nc => nc.OwnerId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<NoteTextVector>(c =>

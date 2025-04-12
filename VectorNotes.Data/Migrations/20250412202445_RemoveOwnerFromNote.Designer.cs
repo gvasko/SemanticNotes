@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VectorNotes.Data;
 
@@ -10,9 +11,11 @@ using VectorNotes.Data;
 namespace VectorNotes.Data.Migrations
 {
     [DbContext(typeof(VectorNotesContext))]
-    partial class VectorNotesContextModelSnapshot : ModelSnapshot
+    [Migration("20250412202445_RemoveOwnerFromNote")]
+    partial class RemoveOwnerFromNote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

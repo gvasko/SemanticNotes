@@ -11,15 +11,15 @@ namespace VectorNotes.DomainModel
         public int Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public int OwnerId { get; set; }
-        public User? Owner { get; set; }
+        public int NoteCollectionId { get; set; }
+        public NoteCollection? NoteCollection { get; set; }
 
-        public List<Tag> Tags { get; init; }
+        public IList<Tag> Tags { get; init; }
 
         public Note()
         {
-            Title = "";
-            Content = "";
+            Title = string.Empty;
+            Content = string.Empty;
             Tags = [];
         }
 
