@@ -5,11 +5,11 @@ import { Observable, take, catchError, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export abstract class BaseApiService<T> {
+export abstract class BaseApiService<T,P=T> {
   constructor(protected http: HttpClient, private baseUrl: string) { }
 
-  getAll(): Observable<T[]> {
-    return this.http.get<T[]>(this.baseUrl).pipe(take(1), catchError(this.handleError));
+  getAll(): Observable<P[]> {
+    return this.http.get<P[]>(this.baseUrl).pipe(take(1), catchError(this.handleError));
   }
 
   getById(id: number | string): Observable<T> {

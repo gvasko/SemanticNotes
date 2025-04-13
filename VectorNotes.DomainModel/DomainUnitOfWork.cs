@@ -109,7 +109,6 @@ namespace VectorNotes.DomainModel
 
         public async Task<Note?> GetNoteByIdAsync(int id)
         {
-            var user = await userService.GetCurrentUserAsync();
             var allNotes = await GetAllNotesAsync();
             return allNotes.FirstOrDefault(note => note.Id == id);
         }
@@ -187,19 +186,26 @@ namespace VectorNotes.DomainModel
             throw new NotImplementedException();
         }
 
-        public Task<NoteCollection?> GetNoteCollectionByIdAsync(int id)
+        public async Task<NoteCollection?> GetNoteCollectionByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var allNoteCollections = await GetAllNoteCollectionsAsync();
+            return allNoteCollections.FirstOrDefault(nc => nc.Id == id);
         }
 
-        public Task<IQueryable<NoteCollection>> GetAllNoteCollectionsAsync()
+        public async Task<IQueryable<NoteCollection>> GetAllNoteCollectionsAsync()
         {
-            throw new NotImplementedException();
+            User user = await userService.GetCurrentUserAsync();
+            var allNoteCollections = await basicUoW.GetAllNoteCollectionsAsync();
+            return allNoteCollections.Where(nc => nc.OwnerId == user.Id);
         }
 
-        public Task<NoteCollection> CreateNoteCollectionAsync(NoteCollection noteCollection)
+        public async Task<NoteCollection> CreateNoteCollectionAsync(NoteCollection noteCollection)
         {
-            throw new NotImplementedException();
+            User user = await userService.GetCurrentUserAsync();
+            noteCollection.Owner = null;
+            noteCollection.OwnerId = user.Id;
+            var dbNoteCollection = await basicUoW.CreateNoteCollectionAsync(noteCollection);
+            return dbNoteCollection;
         }
 
         public Task<NoteCollection> UpdateNoteCollectionAsync(NoteCollection noteCollection)

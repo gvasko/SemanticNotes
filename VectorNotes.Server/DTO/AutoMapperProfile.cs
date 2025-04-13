@@ -14,6 +14,8 @@ namespace VectorNotes.Server.DTO
             CreateMap<Note, NotePreviewDto>().ForMember(noteDto => noteDto.ContentPreview, opt => opt.MapFrom(note => note.Content.Substring(0, Math.Min(note.Content.Length, MaxNoteContentLength))));
             CreateMap<NoteSimilarityValue, NoteSimilarityValueDto>();
             CreateMap<NoteSimilarityResult, NoteSimilarityResultDto>();
+            CreateMap<NoteCollection, NoteCollectionDto>().ReverseMap();
+            CreateMap<NoteCollection, NoteCollectionPreviewDto>().ReverseMap();
         }
     }
 }

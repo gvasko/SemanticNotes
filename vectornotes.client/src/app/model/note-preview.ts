@@ -13,6 +13,6 @@ export class NotePreview {
     this.id = source.id;
     this.title = source.title;
     this.contentPreview = source.contentPreview;
-    this.tags = source.tags;
+    this.tags = source.tags ? [...source.tags] : [];
   }
 }
