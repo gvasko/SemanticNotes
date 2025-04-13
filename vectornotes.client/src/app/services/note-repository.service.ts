@@ -1,43 +1,60 @@
 import { Injectable } from '@angular/core';
 import { Note } from '../model/note';
-import { catchError, of, Subject, throwError } from 'rxjs';
+import { catchError, Observable, of, Subject, switchMap, take, throwError } from 'rxjs';
 import { NotesApiService } from './api/notes-api.service';
 import { NotePreview } from '../model/note-preview';
 import { SimilarityApiService } from './api/similarity-api.service';
 import { Tag } from '../model/tag';
 import { ExtendedNoteSimilarityResult, NoteSimilarityResult } from '../model/note-similarity-result';
 import { SimilarityMatrix } from '../model/similarity-matrix';
+import { NoteCollectionsApiService } from './api/note-collections-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoteRepositoryService {
-  // TODO: unsubscribe?
 
-  constructor(private notesApiService: NotesApiService, private similarityService: SimilarityApiService) { }
+  constructor(
+    private noteCollectionsApiService: NoteCollectionsApiService,
+    private notesApiService: NotesApiService,
+    private similarityService: SimilarityApiService) { }
 
   private notesPreview: NotePreview[] = [];
 
   private notesSubject = new Subject<NotePreview[]>();
   private noteUpdateSubject = new Subject<Note>();
 
+  private currentNoteCollectionId: number = 0;
+
   get NotesSubject(): Subject<NotePreview[]> { return this.notesSubject; }
   get NoteUpdateSubject(): Subject<Note> { return this.noteUpdateSubject; }
 
   init(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.notesApiService.getAll()
+      this.noteCollectionsApiService.getAll()
+        .pipe(take(1), switchMap((allNoteCollections) => {
+          if (allNoteCollections && allNoteCollections.length > 0) {
+            this.currentNoteCollectionId = allNoteCollections[0].id ?? 0;
+          } else {
+            this.currentNoteCollectionId = 0;
+          }
+          if (this.currentNoteCollectionId > 0) {
+            return this.noteCollectionsApiService.getById(this.currentNoteCollectionId);
+          } else {
+            return of(null);
+          }
+        }))
         .subscribe({
-          next: (allNotes) => {
-            this.notesPreview = allNotes;
-            this.NotesSubject.next(allNotes);
+          next: (noteCollection) => {
+            this.notesPreview = noteCollection?.notes ?? [];
+            this.NotesSubject.next(this.notesPreview);
             resolve();
           },
           error: (error) => {
             console.error('API call error:', error);
             reject();
           }
-        })
+        });
     });
   }
 
@@ -46,8 +63,10 @@ export class NoteRepositoryService {
   }
 
   addNote(newNote: Note): Promise<Note> {
+    newNote.noteCollectionId = this.currentNoteCollectionId;
     return new Promise((resolve, reject) => {
       this.notesApiService.create(newNote)
+        .pipe(take(1))
         .subscribe({
           next: (savedNote) => {
             this.init().then(() => resolve(savedNote));
@@ -63,6 +82,7 @@ export class NoteRepositoryService {
   getNote(id: number): Promise<Note> {
     return new Promise((resolve, reject) => {
       this.notesApiService.getById(id)
+        .pipe(take(1))
         .subscribe({
           next: (note) => {
             resolve(note);
@@ -78,6 +98,7 @@ export class NoteRepositoryService {
   updateNote(existingNote: Note): Promise<Note> {
     return new Promise((resolve, reject) => {
       this.notesApiService.update(existingNote)
+        .pipe(take(1))
         .subscribe({
           next: (savedNote) => {
             let index = this.notesPreview.findIndex(note => note.id === savedNote.id);
@@ -104,16 +125,18 @@ export class NoteRepositoryService {
         reject();
         return;
       }
-      this.similarityService.getSimilarNotes(currentNote.id).subscribe({
-        next: (similarityResult: NoteSimilarityResult) => {
-          const extendedResult = new ExtendedNoteSimilarityResult(similarityResult, this.notesPreview);
-          resolve(extendedResult);
-        },
-        error: (error) => {
-          console.error('Similarity API call error:', error);
-          reject();
-        }
-      });
+      this.similarityService.getSimilarNotes(currentNote.id)
+        .pipe(take(1))
+        .subscribe({
+          next: (similarityResult: NoteSimilarityResult) => {
+            const extendedResult = new ExtendedNoteSimilarityResult(similarityResult, this.notesPreview);
+            resolve(extendedResult);
+          },
+          error: (error) => {
+            console.error('Similarity API call error:', error);
+            reject();
+          }
+        });
     });
   }
 
@@ -131,14 +154,16 @@ export class NoteRepositoryService {
   }
 
   private getSimilarityMatrixPromiseImpl = (resolve: (sm: SimilarityMatrix) => void, reject: (reason?: any) => void) => {
-    this.similarityService.getSimilarityMatrix().subscribe({
-      next: (similarityMatrix: SimilarityMatrix) => {
-        similarityMatrix.noteNames = [];
-        similarityMatrix.noteIds.forEach(noteId => {
-          const found = this.notesPreview.find(n => n.id === noteId);
-          similarityMatrix.noteNames.push(found?.title ?? "Unknown");
-        });
-        resolve(similarityMatrix);
+    this.similarityService.getSimilarityMatrix()
+      .pipe(take(1))
+      .subscribe({
+        next: (similarityMatrix: SimilarityMatrix) => {
+          similarityMatrix.noteNames = [];
+          similarityMatrix.noteIds.forEach(noteId => {
+            const found = this.notesPreview.find(n => n.id === noteId);
+            similarityMatrix.noteNames.push(found?.title ?? "Unknown");
+          });
+          resolve(similarityMatrix);
       },
       error: (error) => {
         console.error('Similarity API call error:', error);

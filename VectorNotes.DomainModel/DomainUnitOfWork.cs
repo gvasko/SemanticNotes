@@ -188,8 +188,9 @@ namespace VectorNotes.DomainModel
 
         public async Task<NoteCollection?> GetNoteCollectionByIdAsync(int id)
         {
-            var allNoteCollections = await GetAllNoteCollectionsAsync();
-            return allNoteCollections.FirstOrDefault(nc => nc.Id == id);
+            User user = await userService.GetCurrentUserAsync();
+            var noteCollection = await basicUoW.GetNoteCollectionByIdAsync(id);
+            return noteCollection?.OwnerId == user.Id ? noteCollection : null;
         }
 
         public async Task<IQueryable<NoteCollection>> GetAllNoteCollectionsAsync()
