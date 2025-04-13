@@ -1,7 +1,8 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { SVG } from '@svgdotjs/svg.js';
 import { NoteRepositoryService } from '../services/note-repository.service';
 import { SimilarityMatrix } from '../model/similarity-matrix';
+import { Subscription } from 'rxjs';
 
 class NotePoint {
   constructor(public x: number, public y: number, public noteId: number) { }
@@ -13,7 +14,7 @@ class NotePoint {
   templateUrl: './note-map.component.html',
   styleUrl: './note-map.component.scss'
 })
-export class NoteMapComponent implements AfterViewInit, OnDestroy {
+export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private similarityMatrix: SimilarityMatrix | undefined = undefined;
   private notePoints: NotePoint[] = [];
@@ -22,23 +23,43 @@ export class NoteMapComponent implements AfterViewInit, OnDestroy {
   private needsRedraw = false;
   private frame = 0;
 
-  constructor(private noteRepo: NoteRepositoryService) {
+  private notesSubscription: Subscription | undefined;
 
+  constructor(private noteRepositoryService: NoteRepositoryService) {
+
+  }
+
+  ngOnInit() {
+    this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {
+      this.init();
+      this.redraw();
+    });
   }
 
   ngAfterViewInit() {
-    this.noteRepo.getSimilarityMatrix().then((matrix) => {
-      this.similarityMatrix = matrix;
-      this.notePoints = this.initNotePoints();
-      this.initSVG();
-      this.animate();
-    });
+    this.init();
   }
+
 
   ngOnDestroy() {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    this.notesSubscription?.unsubscribe();
+  }
+
+  init() {
+    const collectionId = this.noteRepositoryService.CurrentNoteCollection?.id ?? 0;
+    if (!collectionId) {
+      console.log("Could not init similarity matrix")
+      return;
+    }
+    this.noteRepositoryService.getSimilarityMatrix(collectionId).then((matrix) => {
+      this.similarityMatrix = matrix;
+      this.notePoints = this.initNotePoints();
+      this.initSVG();
+      this.animate();
+    });
   }
 
   redraw() {
@@ -69,7 +90,9 @@ export class NoteMapComponent implements AfterViewInit, OnDestroy {
     if (container) {
       const svgWidth = container.clientWidth;
       const svgHeight = svgWidth * 0.5;
-      this.draw = SVG().addTo(container).size(svgWidth, svgHeight);
+      if (!this.draw) {
+        this.draw = SVG().addTo(container).size(svgWidth, svgHeight);
+      }
     }
   }
 

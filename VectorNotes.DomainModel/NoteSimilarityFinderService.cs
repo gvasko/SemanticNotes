@@ -34,8 +34,7 @@ namespace VectorNotes.DomainModel
 
                 IList<NoteSimilarityValue> similarityValues = new List<NoteSimilarityValue>();
 
-                // TODO: remember toList! or should we introduce it in the domainUoW?
-                var noteList = (await domainUow.GetAllNotesAsync()).ToList();
+                var noteList = await domainUow.GetAllNotesFromSameCollectionAsync(originalNote);
 
                 foreach (var note in noteList)
                 {

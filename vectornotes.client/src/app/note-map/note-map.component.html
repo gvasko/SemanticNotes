@@ -1,7 +1,10 @@
-<div class="controls">
-  <button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="redraw()">
-    <span>Redraw</span>
-    <mat-icon aria-hidden="false" aria-label="Redraw" fontIcon="refresh"></mat-icon>
-  </button>
+<div class="note-map">
+  <div class="controls">
+    <lantor-collection-selector></lantor-collection-selector>
+    <button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="redraw()">
+      <span>Redraw</span>
+      <mat-icon aria-hidden="false" aria-label="Redraw" fontIcon="refresh"></mat-icon>
+    </button>
+  </div>
+  <div id="svgContainer" class="svg-container"></div>
 </div>
-<div id="svgContainer" class="svg-container"></div>

@@ -8,6 +8,8 @@ import { Tag } from '../model/tag';
 import { ExtendedNoteSimilarityResult, NoteSimilarityResult } from '../model/note-similarity-result';
 import { SimilarityMatrix } from '../model/similarity-matrix';
 import { NoteCollectionsApiService } from './api/note-collections-api.service';
+import { NoteCollectionPreview } from '../model/note-collection-preview';
+import { NoteCollection } from '../model/note-collection';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,7 @@ export class NoteRepositoryService {
     private similarityService: SimilarityApiService) { }
 
   private notesPreview: NotePreview[] = [];
+  private collectionsPreview: NoteCollectionPreview[] = [];
 
   private notesSubject = new Subject<NotePreview[]>();
   private noteUpdateSubject = new Subject<Note>();
@@ -29,13 +32,28 @@ export class NoteRepositoryService {
   get NotesSubject(): Subject<NotePreview[]> { return this.notesSubject; }
   get NoteUpdateSubject(): Subject<Note> { return this.noteUpdateSubject; }
 
+  get CurrentNoteCollection(): NoteCollection | undefined { return this.collectionsPreview.find(cp => cp.id === this.currentNoteCollectionId) }
+
   init(): Promise<void> {
+    if (this.notesPreview.length === 0) {
+      return this.load();
+    } else {
+      this.NotesSubject.next(this.notesPreview);
+      return Promise.resolve();
+    }
+  }
+
+  load(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.noteCollectionsApiService.getAll()
         .pipe(take(1), switchMap((allNoteCollections) => {
-          if (allNoteCollections && allNoteCollections.length > 0) {
-            this.currentNoteCollectionId = allNoteCollections[0].id ?? 0;
+          if (allNoteCollections?.length > 0) {
+            this.collectionsPreview = allNoteCollections;
+            if (!this.collectionsPreview.find(cp => cp.id === this.currentNoteCollectionId)) {
+              this.currentNoteCollectionId = allNoteCollections[0].id ?? 0;
+            }
           } else {
+            this.collectionsPreview = [];
             this.currentNoteCollectionId = 0;
           }
           if (this.currentNoteCollectionId > 0) {
@@ -62,6 +80,10 @@ export class NoteRepositoryService {
     return this.notesPreview;
   }
 
+  getCollections(): NoteCollectionPreview[] {
+    return this.collectionsPreview;
+  }
+
   addNote(newNote: Note): Promise<Note> {
     newNote.noteCollectionId = this.currentNoteCollectionId;
     return new Promise((resolve, reject) => {
@@ -69,7 +91,7 @@ export class NoteRepositoryService {
         .pipe(take(1))
         .subscribe({
           next: (savedNote) => {
-            this.init().then(() => resolve(savedNote));
+            this.load().then(() => resolve(savedNote));
           },
           error: (error) => {
             console.error('API call error:', error);
@@ -140,21 +162,21 @@ export class NoteRepositoryService {
     });
   }
 
-  getSimilarityMatrix(): Promise<SimilarityMatrix> {
+  getSimilarityMatrix(noteCollectionId: number): Promise<SimilarityMatrix> {
     // TODO: find a better solution for chaining
     return new Promise((resolve, reject) => {
       if (this.notesPreview.length === 0) {
         this.init().then(() => {
-          this.getSimilarityMatrixPromiseImpl(resolve, reject);
+          this.getSimilarityMatrixPromiseImpl(noteCollectionId, resolve, reject);
         })
       } else {
-        this.getSimilarityMatrixPromiseImpl(resolve, reject);
+        this.getSimilarityMatrixPromiseImpl(noteCollectionId, resolve, reject);
       }
     });
   }
 
-  private getSimilarityMatrixPromiseImpl = (resolve: (sm: SimilarityMatrix) => void, reject: (reason?: any) => void) => {
-    this.similarityService.getSimilarityMatrix()
+  private getSimilarityMatrixPromiseImpl = (noteCollectionId: number, resolve: (sm: SimilarityMatrix) => void, reject: (reason?: any) => void) => {
+    this.similarityService.getSimilarityMatrix(noteCollectionId)
       .pipe(take(1))
       .subscribe({
         next: (similarityMatrix: SimilarityMatrix) => {
@@ -184,4 +206,17 @@ export class NoteRepositoryService {
     return this.updateNote(note);
   }
 
+  addCollection(name: string) {
+    const nc = new NoteCollection();
+    nc.name = name;
+    this.noteCollectionsApiService.create(nc).pipe(take(1)).subscribe((noteCollection) => {
+      this.currentNoteCollectionId = noteCollection?.id ?? 0;
+      this.load();
+    });
+  }
+
+  setCurrentCollection(noteCollectionId: number) {
+    this.currentNoteCollectionId = noteCollectionId;
+    this.load();
+  }
 }

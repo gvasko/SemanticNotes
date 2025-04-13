@@ -218,5 +218,10 @@ namespace VectorNotes.DomainModel
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IList<Note>> GetAllNotesFromSameCollectionAsync(Note note)
+        {
+            return (await GetNoteCollectionByIdAsync(note.NoteCollectionId))?.Notes ?? [];
+        }
     }
 }

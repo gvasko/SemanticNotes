@@ -15,8 +15,8 @@ export class SimilarityApiService {
     return this.http.get<NoteSimilarityResult>(`${this.baseUrl}/${id}`).pipe(take(1), catchError(this.handleError));
   }
 
-  getSimilarityMatrix(): Observable<SimilarityMatrix> {
-    return this.http.get<SimilarityMatrix>(`${this.baseUrl}`).pipe(take(1), catchError(this.handleError));
+  getSimilarityMatrix(noteCollectionId: number): Observable<SimilarityMatrix> {
+    return this.http.get<SimilarityMatrix>(`${this.baseUrl}/matrix/${noteCollectionId}`).pipe(take(1), catchError(this.handleError));
   }
 
   protected handleError(error: HttpErrorResponse) {

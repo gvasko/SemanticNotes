@@ -13,5 +13,6 @@ namespace VectorNotes.DomainModel
     public interface IDomainUnitOfWork : IBasicUnitOfWork
     {
         Task<Alphabet> GetDefaultAlphabetAsync();
+        Task<IList<Note>> GetAllNotesFromSameCollectionAsync(Note note);
     }
 }

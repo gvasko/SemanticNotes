@@ -39,10 +39,10 @@ namespace VectorNotes.Server.Controllers
             return Ok(resultDto);
         }
 
-        [HttpGet]
-        public async Task<SimilarityMatrixDto> GetSimilarityMatrix()
+        [HttpGet("matrix/{noteCollectionId}")]
+        public async Task<SimilarityMatrixDto> GetSimilarityMatrix(int noteCollectionId)
         {
-            var notes = (await uow.GetAllNotesAsync()).ToList();
+            var notes = (await uow.GetNoteCollectionByIdAsync(noteCollectionId))?.Notes ?? [];
 
             var result = new SimilarityMatrixDto()
             {

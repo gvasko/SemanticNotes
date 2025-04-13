@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpInterceptor, provideHttpClient } from '@angular/common/http';
 import { Inject, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +21,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SemanticBrowserComponent } from './semantic-browser/semantic-browser.component';
@@ -36,6 +38,8 @@ import { CreateTagDialogComponent } from './create-tag-dialog/create-tag-dialog.
 import { TagListComponent } from './tag-list/tag-list.component';
 import { InsightComponent } from './insight/insight.component';
 import { NoteMapComponent } from './note-map/note-map.component';
+import { CollectionSelectorComponent } from './collection-selector/collection-selector.component';
+import { CreateCollectionDialogComponent } from './create-collection-dialog/create-collection-dialog.component';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -98,10 +102,13 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     CreateTagDialogComponent,
     TagListComponent,
     InsightComponent,
-    NoteMapComponent
+    NoteMapComponent,
+    CollectionSelectorComponent,
+    CreateCollectionDialogComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     MatTableModule,
     AppRoutingModule,
     MatProgressSpinnerModule,
@@ -116,6 +123,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MatDialogModule,
     MatChipsModule,
     MatTabsModule,
+    MatSelectModule,
     ReactiveFormsModule,
     HttpClientModule,
     MsalModule

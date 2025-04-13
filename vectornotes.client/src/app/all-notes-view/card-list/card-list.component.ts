@@ -33,7 +33,7 @@ export class CardListComponent implements OnInit, OnDestroy {
 
   private notesUpdated: Subject<number> = new Subject();
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   ngOnInit() {
     this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {

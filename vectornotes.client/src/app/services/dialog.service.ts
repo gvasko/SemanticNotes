@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { QuickNoteEditorComponent } from '../quick-note-editor/quick-note-editor.component';
 import { Note } from '../model/note';
 import { CreateTagDialogComponent } from '../create-tag-dialog/create-tag-dialog.component';
+import { CreateCollectionDialogComponent } from '../create-collection-dialog/create-collection-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,10 @@ export class DialogService {
     return this.dialog.open(CreateTagDialogComponent, {
       data: note
     });
+  }
+
+  openCreateCollectionDialog(): MatDialogRef<CreateCollectionDialogComponent, any> {
+    return this.dialog.open(CreateCollectionDialogComponent);
   }
 
 }

@@ -36,5 +36,14 @@ namespace VectorNotes.Server.Controllers
             var noteCollectionDto = mapper.Map<NoteCollectionDto>(noteCollection);
             return Ok(noteCollectionDto);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<NoteCollectionDto>> CreateNoteCollection(NoteCollectionPreviewDto requestDto)
+        {
+            var noteCollectionReq = mapper.Map<NoteCollection>(requestDto);
+            var noteCollectionDb = await uow.CreateNoteCollectionAsync(noteCollectionReq);
+            var noteCollectionResponse = mapper.Map<NoteCollectionDto>(noteCollectionDb);
+            return Ok(noteCollectionResponse);
+        }
     }
 }
