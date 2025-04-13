@@ -23,6 +23,7 @@ export class QuickNoteEditorComponent implements OnInit {
     id: new FormControl(0),
     title: new FormControl(""),
     content: new FormControl(""),
+    noteCollectionId: new FormControl(0),
     tags: new FormControl<Tag[]>([])
   });
 
