@@ -124,11 +124,17 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (!this.similarityMatrix) return newPoints;
 
+    //const scaledValues = this.similarityMatrix.getScaledValues();
     const scaledValues = this.similarityMatrix.getRowBasedScaledValues();
 
-    for (let i = 0; i < this.notePoints.length; i++) {
+    const order: number[] = Array.from({ length: this.notePoints.length }, (_, i) => i)
+      .sort(() => Math.random() - 0.5);
+
+    for (let ii = 0; ii < this.notePoints.length; ii++) {
+      const i = order[ii];
       let newPoint = new NotePoint(this.notePoints[i].x, this.notePoints[i].y, this.notePoints[i].noteId);
-      for (let j = 0; j < this.notePoints.length; j++) {
+      for (let jj = 0; jj < this.notePoints.length; jj++) {
+        const j = order[jj];
         if (i === j) continue;
         const ijX = this.notePoints[i].x - this.notePoints[j].x;
         const ijY = this.notePoints[i].y - this.notePoints[j].y;
@@ -148,6 +154,8 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       newPoints.push(newPoint);
     }
+
+    newPoints.sort((a, b) => a.noteId - b.noteId);
 
     let centerX = 0.0;
     let centerY = 0.0;
