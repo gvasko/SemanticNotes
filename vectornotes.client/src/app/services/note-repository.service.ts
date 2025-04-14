@@ -179,12 +179,13 @@ export class NoteRepositoryService {
     this.similarityService.getSimilarityMatrix(noteCollectionId)
       .pipe(take(1))
       .subscribe({
-        next: (similarityMatrix: SimilarityMatrix) => {
-          similarityMatrix.noteNames = [];
-          similarityMatrix.noteIds.forEach(noteId => {
+        next: (similarityMatrixJson: SimilarityMatrix) => {
+          similarityMatrixJson.noteNames = [];
+          similarityMatrixJson.noteIds.forEach(noteId => {
             const found = this.notesPreview.find(n => n.id === noteId);
-            similarityMatrix.noteNames.push(found?.title ?? "Unknown");
+            similarityMatrixJson.noteNames.push(found?.title ?? "Unknown");
           });
+          const similarityMatrix = new SimilarityMatrix(similarityMatrixJson);
           resolve(similarityMatrix);
       },
       error: (error) => {

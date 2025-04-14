@@ -31,8 +31,10 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {
-      this.init();
-      this.redraw();
+      this.stopAnimation();
+      this.init().then(() => {
+        this.redraw();
+      });
     });
   }
 
@@ -42,23 +44,25 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnDestroy() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
     this.notesSubscription?.unsubscribe();
+    this.stopAnimation();
   }
 
-  init() {
-    const collectionId = this.noteRepositoryService.CurrentNoteCollection?.id ?? 0;
-    if (!collectionId) {
-      console.log("Could not init similarity matrix")
-      return;
-    }
-    this.noteRepositoryService.getSimilarityMatrix(collectionId).then((matrix) => {
-      this.similarityMatrix = matrix;
-      this.notePoints = this.initNotePoints();
-      this.initSVG();
-      this.animate();
+  init(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const collectionId = this.noteRepositoryService.CurrentNoteCollection?.id ?? 0;
+      if (!collectionId) {
+        console.log("Could not init similarity matrix")
+        reject("Could not init similarity matrix");
+        return;
+      }
+      this.noteRepositoryService.getSimilarityMatrix(collectionId).then((matrix) => {
+        this.similarityMatrix = matrix;
+        this.notePoints = this.initNotePoints();
+        this.initSVG();
+        this.animate();
+        resolve();
+      });
     });
   }
 
@@ -120,6 +124,8 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (!this.similarityMatrix) return newPoints;
 
+    const scaledValues = this.similarityMatrix.getRowBasedScaledValues();
+
     for (let i = 0; i < this.notePoints.length; i++) {
       let newPoint = new NotePoint(this.notePoints[i].x, this.notePoints[i].y, this.notePoints[i].noteId);
       for (let j = 0; j < this.notePoints.length; j++) {
@@ -129,7 +135,7 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
         const deltaIJX = ijX * 0.001;
         const deltaIJY = ijY * 0.001;
         const distance = Math.sqrt(Math.pow(ijX, 2) + Math.pow(ijY, 2));
-        const expectedDistance = (1.0 - this.similarityMatrix.values[i][j]) * distanceUnit;
+        const expectedDistance = (1.0 - scaledValues[i][j]) * distanceUnit;
         if (Math.abs(distance - expectedDistance) < epsilon) continue;
         else if (distance > expectedDistance) {
           newPoint.x -= deltaIJX;
@@ -143,6 +149,22 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
       newPoints.push(newPoint);
     }
 
+    let centerX = 0.0;
+    let centerY = 0.0;
+
+    newPoints.forEach((p) => {
+      centerX += p.x;
+      centerY += p.y;
+    });
+
+    centerX /= newPoints.length;
+    centerY /= newPoints.length;
+
+    newPoints.forEach((p) => {
+      p.x -= centerX;
+      p.y -= centerY;
+    });
+
     return newPoints;
   }
 
@@ -150,10 +172,18 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.notePoints = this.needsRedraw ? this.initNotePoints() : this.updateNotePoints();
     this.needsRedraw = false;
     this.updateSVG();
-    if (this.frame++ < 1000) {
+    //if (this.frame++ < 5000) {
       this.animationFrameId = requestAnimationFrame(() => this.animate());
-    } else {
-      this.animationFrameId = 0;
+    //} else {
+    //  this.animationFrameId = 0;
+    //}
+  }
+
+  stopAnimation() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = 0
     }
   }
+
 }
