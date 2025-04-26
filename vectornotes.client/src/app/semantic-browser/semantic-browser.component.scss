@@ -37,6 +37,13 @@
       overflow-y: auto;
       border-left: 1px solid #ccc;
 
+      p {
+        background-color: #ccc; /* Dark background */
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+
       mat-nav-list {
         padding: 0;
 

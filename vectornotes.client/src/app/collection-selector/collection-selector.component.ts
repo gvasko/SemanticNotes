@@ -29,7 +29,7 @@ export class CollectionSelectorComponent implements OnInit, OnDestroy {
     this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {
       this.load();
     });
-    this.noteRepositoryService.init().then(() => {
+    this.noteRepositoryService.initFromDefaultCollection().then(() => {
       this.load();
     });
   }

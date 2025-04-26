@@ -14,19 +14,20 @@
     <div *ngIf="!currentNote" class="current-note">
       <p>Note not found...</p>
     </div>
-    <div class="similar-note-list">
-      <mat-tab-group>
-        <mat-tab label="Tags">
-          <mat-nav-list>
-            <mat-list-item *ngFor="let tag of similarTags">{{ tag }}</mat-list-item>
-          </mat-nav-list>
-        </mat-tab>
-        <mat-tab label="Notes">
-          <mat-nav-list>
-            <mat-list-item *ngFor="let note of similarNotes" (click)="similarNoteClicked(note.id)">[{{note.similarityValue.toFixed(2)}}] {{ note.title }}</mat-list-item>
-          </mat-nav-list>
-        </mat-tab>
-      </mat-tab-group>
+    <div *ngIf="currentNote" class="similar-note-list">
+      <div>
+        <p>Tags</p>
+        <mat-nav-list *ngIf="similarTags.length > 0">
+          <mat-list-item *ngFor="let tag of similarTags">{{ tag }}</mat-list-item>
+        </mat-nav-list>
+        <span *ngIf="similarTags.length === 0">Not found</span>
+      </div>
+      <div>
+        <p>Related Notes</p>
+        <mat-nav-list>
+          <mat-list-item *ngFor="let note of similarNotes" (click)="similarNoteClicked(note.id)">[{{note.similarityValue.toFixed(2)}}] {{ note.title }}</mat-list-item>
+        </mat-nav-list>
+      </div>
     </div>
   </div>
 </div>

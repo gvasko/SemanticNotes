@@ -14,7 +14,7 @@ export class InsightComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.noteRepositoryService.init();
+    this.noteRepositoryService.initFromDefaultCollection();
   }
 
   getNoteCount(): number {

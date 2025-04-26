@@ -42,7 +42,6 @@ export class CardListComponent implements OnInit, OnDestroy {
     this.noteUpdateSubscription = this.noteRepositoryService.NoteUpdateSubject.subscribe((updatedNote) => {
       this.updateItem(updatedNote);
     });
-    this.noteRepositoryService.init();
   }
 
   ngOnDestroy() {

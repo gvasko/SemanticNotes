@@ -40,7 +40,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
     const noteIdParam = this.route.snapshot.paramMap.get("id");
     const noteId = noteIdParam === null ? 0 : +noteIdParam;
-    this.noteRepositoryService.init().then(() => {
+    this.noteRepositoryService.initFromNote(noteId).then(() => {
       this.initCurrentNote(noteId);
     });
 
