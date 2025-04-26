@@ -13,6 +13,7 @@ export class AuthService {
   private isAuthenticatedUser = false;
   tokenExpiration: string = '';
   private readonly _destroying$ = new Subject<void>();
+  private ensureUserIsCreated = true;
 
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -28,7 +29,13 @@ export class AuthService {
         takeUntil(this._destroying$)
       )
       .subscribe(() => {
-        console.log("Ensure user is created.")
+        console.log("Ensure user is created. (1)")
+
+        if (!this.ensureUserIsCreated) {
+          console.log("User is already created. (1)");
+          return;
+        }
+
         this.userApiService.create(new UserInfo()).subscribe(userInfo => {
           console.log("Email: " + userInfo.email);
           this.setAuthenticated();
@@ -39,13 +46,25 @@ export class AuthService {
     this.msalBroadcastService.msalSubject$
       .pipe(
         filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+        takeUntil(this._destroying$)
       )
       .subscribe((result: EventMessage) => {
         const payload = result.payload as AuthenticationResult;
         this.msalService.instance.setActiveAccount(payload.account);
-        console.log("Ensure user is created.")
-        this.userApiService.create(new UserInfo());
-      });
+
+        console.log("Ensure user is created. (2)")
+
+        if (!this.ensureUserIsCreated) {
+          console.log("User is already created. (2)");
+          return;
+        }
+
+        this.userApiService.create(new UserInfo()).subscribe(userInfo => {
+          console.log("Email: " + userInfo.email);
+          this.setAuthenticated();
+          this.isInitialized = true;
+        })
+     });
 
     // Used for storing and displaying token expiration
     this.msalBroadcastService.msalSubject$.pipe(filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS)).subscribe(msg => {
