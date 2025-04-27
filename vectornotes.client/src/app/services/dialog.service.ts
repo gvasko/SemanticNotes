@@ -4,6 +4,8 @@ import { QuickNoteEditorComponent } from '../quick-note-editor/quick-note-editor
 import { Note } from '../model/note';
 import { CreateTagDialogComponent } from '../create-tag-dialog/create-tag-dialog.component';
 import { CreateCollectionDialogComponent } from '../create-collection-dialog/create-collection-dialog.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationData } from '../confirmation-dialog/confirmation-data';
 
 @Injectable({
   providedIn: 'root'
@@ -32,4 +34,15 @@ export class DialogService {
     return this.dialog.open(CreateCollectionDialogComponent);
   }
 
+  openYesNoCancelDialog(title: string, content: string[], action: () => void): MatDialogRef<ConfirmationDialogComponent, any> {
+    return this.dialog.open(ConfirmationDialogComponent, {
+      data: ConfirmationData.CreateYesNoCancelData(title, content, action)
+    });
+  }
+
+  openYesNoDialog(title: string, content: string[], action: () => void): MatDialogRef<ConfirmationDialogComponent, any> {
+    return this.dialog.open(ConfirmationDialogComponent, {
+      data: ConfirmationData.CreateYesNoData(title, content, action)
+    });
+  }
 }

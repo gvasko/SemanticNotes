@@ -1,0 +1,8 @@
+<h2 id="modal-title" mat-dialog-title>{{title}}</h2>
+<mat-dialog-content id="modal-content">
+  <p *ngFor="let message of messages">{{message}}</p></mat-dialog-content>
+<mat-dialog-actions>  <button id="modal-button-cancel" mat-button mat-dialog-close cdkFocusInitial *ngIf="cancelButtonAllowed()" (click)="onClickCancelButton()">{{cancelButtonLabel}}</button>
+  <button id="modal-button-secondary" mat-button mat-dialog-close *ngIf="cancelButtonAllowed()" (click)="onClickSecondaryButton()">{{secondaryButtonLabel}}</button>
+  <button id="modal-button-secondary" mat-button mat-dialog-close cdkFocusInitial *ngIf="!cancelButtonAllowed()" (click)="onClickSecondaryButton()">{{secondaryButtonLabel}}</button>
+  <button id="modal-button-main" mat-button mat-dialog-close (click)="onClickMainButton()">{{mainButtonLabel}}</button>
+</mat-dialog-actions>

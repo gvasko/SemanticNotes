@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { NoteRepositoryService } from '../services/note-repository.service';
 import { Note } from '../model/note';
 import { DialogService } from '../services/dialog.service';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { Tag } from '../model/tag';
 import { SimilarNotePreview } from '../model/note-similarity-result';
 
@@ -104,4 +104,17 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     this.noteRepositoryService.removeNoteTag(this.currentNote, tag);
   }
 
+  deleteButtonClicked() {
+    this.dialogService.openYesNoDialog("Delete Note?", [this.currentNote?.title ?? "Current note"], this.deleteNoteClicked)
+      .afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        console.log("delete: yes");
+      }
+    });
+  }
+
+  deleteNoteClicked = () => {
+    console.log(`TODO: Delete note '${this.currentNote?.title}'`);
+    this.router.navigate(["/notes"]);
+  }
 }

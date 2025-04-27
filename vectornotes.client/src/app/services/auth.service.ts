@@ -35,6 +35,7 @@ export class AuthService {
           console.log("User is already created. (1)");
           return;
         }
+        this.ensureUserIsCreated = false;
 
         this.userApiService.create(new UserInfo()).subscribe(userInfo => {
           console.log("Email: " + userInfo.email);
@@ -58,6 +59,7 @@ export class AuthService {
           console.log("User is already created. (2)");
           return;
         }
+        this.ensureUserIsCreated = false;
 
         this.userApiService.create(new UserInfo()).subscribe(userInfo => {
           console.log("Email: " + userInfo.email);
