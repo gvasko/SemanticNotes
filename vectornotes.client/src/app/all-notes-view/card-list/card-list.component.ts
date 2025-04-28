@@ -30,12 +30,16 @@ export class CardListComponent implements OnInit, OnDestroy {
 
   private notesSubscription: Subscription | undefined;
   private noteUpdateSubscription: Subscription | undefined;
+  private noteCollectionIdSubscription: Subscription | undefined;
 
   private notesUpdated: Subject<number> = new Subject();
 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   ngOnInit() {
+    this.noteCollectionIdSubscription = this.noteRepositoryService.NoteCollectionIdSubject.subscribe((id) => {
+      this.paginatorService.pageIndex = 0;
+    });
     this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {
       this.initItems(notes);
     });
@@ -45,6 +49,7 @@ export class CardListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.noteCollectionIdSubscription?.unsubscribe();
     this.notesSubscription?.unsubscribe();
     this.noteUpdateSubscription?.unsubscribe();
   }

@@ -26,11 +26,14 @@ export class NoteRepositoryService {
 
   private notesSubject = new Subject<NotePreview[]>();
   private noteUpdateSubject = new Subject<Note>();
+  private noteCollectionIdSubject = new Subject<number>();
 
   private currentNoteCollectionId: number = 0;
 
   get NotesSubject(): Subject<NotePreview[]> { return this.notesSubject; }
   get NoteUpdateSubject(): Subject<Note> { return this.noteUpdateSubject; }
+
+  get NoteCollectionIdSubject(): Subject<number> { return this.noteCollectionIdSubject; }
 
   get CurrentNoteCollection(): NoteCollection | undefined { return this.collectionsPreview.find(cp => cp.id === this.currentNoteCollectionId) }
 
@@ -258,6 +261,7 @@ export class NoteRepositoryService {
     if (noteCollectionId === this.currentNoteCollectionId) return Promise.resolve();
 
     this.currentNoteCollectionId = noteCollectionId;
+    this.noteCollectionIdSubject.next(this.currentNoteCollectionId);
     return this.load();
   }
 }
