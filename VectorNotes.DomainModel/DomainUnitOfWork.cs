@@ -64,9 +64,17 @@ namespace VectorNotes.DomainModel
             await CreateOrUpdateTextVectorInCacheAsync(note, abc, vector);
         }
 
-        public Task DeleteNoteByIdAsync(int noteId)
+        public async Task DeleteNoteByIdAsync(int noteId)
         {
-            throw new NotImplementedException();
+            var note = await GetNoteByIdAsync(noteId);
+
+            if (note == null)
+            {
+                throw new ArgumentNullException($"Note with id {noteId} does not exist");
+            }
+
+            await RemoveNoteFromCacheAsync(noteId);
+            await basicUoW.DeleteNoteByIdAsync(noteId);
         }
 
         public async Task<IList<Alphabet>> GetAllAlphabetsAsync()
@@ -135,14 +143,15 @@ namespace VectorNotes.DomainModel
             throw new NotImplementedException();
         }
 
-        public void RemoveAlphabetFromCache(int alphabetId)
+        public Task RemoveAlphabetFromCache(int alphabetId)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveNoteFromCacheAsync(int noteId)
+        public async Task RemoveNoteFromCacheAsync(int noteId)
         {
-            throw new NotImplementedException();
+            await GetNoteByIdAsync(noteId);
+            await basicUoW.RemoveNoteFromCacheAsync(noteId);
         }
 
         public async Task SaveAsync()

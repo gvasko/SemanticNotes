@@ -27,8 +27,8 @@ namespace VectorNotes.DomainModel
 
         Task<NoteTextVector?> GetTextVectorFromCacheAsync(Note note, Alphabet alphabet);
         Task CreateOrUpdateTextVectorInCacheAsync(Note note, Alphabet alphabet, HiDimBipolarVector vector);
-        void RemoveNoteFromCacheAsync(int noteId);
-        void RemoveAlphabetFromCache(int alphabetId);
+        Task RemoveNoteFromCacheAsync(int noteId);
+        Task RemoveAlphabetFromCache(int alphabetId);
 
         Task SaveAsync();
 

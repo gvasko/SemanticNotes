@@ -46,9 +46,11 @@ namespace VectorNotes.Data.Infrastructure
             return entry.Entity;
         }
 
-        public Task DeleteNoteByIdAsync(int noteId)
+        public async Task DeleteNoteByIdAsync(int noteId)
         {
-            throw new NotImplementedException();
+            var note = await GetNoteByIdAsync(noteId) ?? throw new ArgumentNullException($"Note with id {noteId} does not exist");
+            dbContext.Notes.Remove(note);
+            await dbContext.SaveChangesAsync();
         }
 
         public Task<IQueryable<Alphabet>> GetAllAlphabetsAsync()
@@ -85,14 +87,19 @@ namespace VectorNotes.Data.Infrastructure
             throw new NotImplementedException();
         }
 
-        public void RemoveAlphabetFromCache(int alphabetId)
+        public Task RemoveAlphabetFromCache(int alphabetId)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveNoteFromCacheAsync(int noteId)
+        public async Task RemoveNoteFromCacheAsync(int noteId)
         {
-            throw new NotImplementedException();
+            await dbContext.NoteTextVectorCache.Where(vector => vector.NoteId == noteId)
+                .ForEachAsync(
+                (vector) =>
+                {
+                    dbContext.NoteTextVectorCache.Remove(vector);
+                });
         }
 
         public async Task SaveAsync()

@@ -164,6 +164,22 @@ export class NoteRepositoryService {
     });
   }
 
+  deleteNote(noteId: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.notesApiService.delete(noteId)
+        .pipe(take(1))
+        .subscribe({
+          next: () => {
+            this.load().then(resolve).catch(reject);
+          },
+          error: (error) => {
+            console.error('API call error:', error);
+            reject();
+          }
+        })
+    });
+  }
+
   getSimilarNotes(currentNote: Note): Promise<ExtendedNoteSimilarityResult> {
     return new Promise((resolve, reject) => {
       if (!currentNote?.id) {

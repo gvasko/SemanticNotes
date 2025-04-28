@@ -55,5 +55,12 @@ namespace VectorNotes.Server.Controllers
             await uow.SaveAsync();
             return Ok(mapper.Map<NoteDto>(dbNote));
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteNote(int id)
+        {
+            await uow.DeleteNoteByIdAsync(id);
+            return Ok();
+        }
     }
 }

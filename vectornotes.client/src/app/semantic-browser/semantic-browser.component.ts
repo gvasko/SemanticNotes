@@ -114,7 +114,9 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   }
 
   deleteNoteClicked = () => {
-    console.log(`TODO: Delete note '${this.currentNote?.title}'`);
+    if (this.currentNote?.id) {
+      this.noteRepositoryService.deleteNote(this.currentNote?.id);
+    }
     this.router.navigate(["/notes"]);
   }
 }
