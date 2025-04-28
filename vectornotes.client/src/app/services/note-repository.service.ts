@@ -148,10 +148,12 @@ export class NoteRepositoryService {
       this.notesApiService.update(existingNote)
         .pipe(take(1))
         .subscribe({
-          next: (savedNote) => {
+          next: (savedNoteJson: Note) => {
+            let savedNote = new Note(savedNoteJson);
             let index = this.notesPreview.findIndex(note => note.id === savedNote.id);
             if (index !== -1) {
-              this.notesPreview[index] = savedNote;
+              this.notesPreview[index] = new NotePreview(savedNote);
+              this.notesSubject.next(this.notesPreview);
               this.noteUpdateSubject.next(savedNote);
               resolve(savedNote);
             } else {

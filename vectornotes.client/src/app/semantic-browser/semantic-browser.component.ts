@@ -105,12 +105,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   }
 
   deleteButtonClicked() {
-    this.dialogService.openYesNoDialog("Delete Note?", [this.currentNote?.title ?? "Current note"], this.deleteNoteClicked)
-      .afterClosed().pipe(take(1)).subscribe(result => {
-      if (result) {
-        console.log("delete: yes");
-      }
-    });
+    this.dialogService.openYesNoDialog("Delete Note?", [this.currentNote?.title ?? "Current note"], this.deleteNoteClicked);
   }
 
   deleteNoteClicked = () => {
