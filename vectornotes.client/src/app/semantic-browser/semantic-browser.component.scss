@@ -27,6 +27,10 @@
       max-width: 800px;
       overflow-y: auto;
       text-align: left;
+
+      .collection-name {
+          font-size: small;
+      }
     }
 
     .similar-note-list {

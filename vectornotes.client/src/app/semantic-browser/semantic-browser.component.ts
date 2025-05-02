@@ -59,6 +59,9 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     this.routerSubscription?.unsubscribe();
   }
 
+  get currentCollectionName(): string {
+    return this.noteRepositoryService.CurrentNoteCollection?.name ?? "unknown";
+  }
   initCurrentNote(noteId: number) {
     this.noteRepositoryService.getNote(noteId).then((note) => {
       this.currentNote = note;
