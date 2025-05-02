@@ -11,8 +11,8 @@ export class SimilarityApiService {
   private baseUrl: string = "/api/similarity";
   constructor(protected http: HttpClient) { }
 
-  getSimilarNotes(id: number): Observable<NoteSimilarityResult> {
-    return this.http.get<NoteSimilarityResult>(`${this.baseUrl}/${id}`).pipe(take(1), catchError(this.handleError));
+  getSimilarNotes(collectionId: number, noteId: number): Observable<NoteSimilarityResult> {
+    return this.http.get<NoteSimilarityResult>(`${this.baseUrl}/${collectionId}/${noteId}`).pipe(take(1), catchError(this.handleError));
   }
 
   getSimilarityMatrix(noteCollectionId: number): Observable<SimilarityMatrix> {

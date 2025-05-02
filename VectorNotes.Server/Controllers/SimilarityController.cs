@@ -24,17 +24,18 @@ namespace VectorNotes.Server.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NoteSimilarityResultDto>> GetSimilarNotes(int id)
+        [HttpGet("{collectionId}/{noteId}")]
+        public async Task<ActionResult<NoteSimilarityResultDto>> GetSimilarNotes(int collectionId, int noteId)
         {
-            var note = await uow.GetNoteByIdAsync(id);
+            var note = await uow.GetNoteByIdAsync(noteId);
+            var collection = await uow.GetNoteCollectionByIdAsync(collectionId);
 
-            if (note == null)
+            if (note == null || collection == null)
             {
                 return Ok(Array.Empty<int>().ToList());
             }
 
-            var result = await simService.FindSimilarNotes(note, 10);
+            var result = await simService.FindSimilarNotesInCollection(note, 10, collection);
             var resultDto = mapper.Map<NoteSimilarityResultDto>(result);
             return Ok(resultDto);
         }

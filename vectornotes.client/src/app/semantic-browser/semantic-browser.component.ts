@@ -20,8 +20,10 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   similarityValues: number[] = [];
 
   currentNote: Note | undefined = undefined;
+  currentNoteCollectionName: string = "";
 
   private noteUpdateSubscription: Subscription | undefined;
+  private noteCollectionIdUpdateSubscription: Subscription | undefined;
   private routerSubscription: Subscription | undefined;
 
   constructor(
@@ -36,6 +38,10 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.noteUpdateSubscription = this.noteRepositoryService.NoteUpdateSubject.subscribe((updatedNote) => {
       this.updateCurrentNote(updatedNote);
+    });
+
+    this.noteCollectionIdUpdateSubscription = this.noteRepositoryService.NoteCollectionIdSubject.subscribe((updatedCollectionId) => {
+      this.updateSimilarities();
     });
 
     const noteIdParam = this.route.snapshot.paramMap.get("id");
@@ -56,15 +62,20 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.noteUpdateSubscription?.unsubscribe();
+    this.noteCollectionIdUpdateSubscription?.unsubscribe();
     this.routerSubscription?.unsubscribe();
   }
 
   get currentCollectionName(): string {
-    return this.noteRepositoryService.CurrentNoteCollection?.name ?? "unknown";
+    return this.currentNoteCollectionName;
   }
+
   initCurrentNote(noteId: number) {
     this.noteRepositoryService.getNote(noteId).then((note) => {
       this.currentNote = note;
+      this.currentNoteCollectionName = this.noteRepositoryService.getCollections()
+        .find(c => c.id === note.noteCollectionId)?.name ?? "unknown";
+
       this.updateSimilarities();
     });
   }

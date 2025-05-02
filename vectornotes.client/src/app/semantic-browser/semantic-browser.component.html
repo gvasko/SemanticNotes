@@ -15,6 +15,7 @@
       <p>Note not found...</p>
     </div>
     <div *ngIf="currentNote" class="similar-note-list">
+      <lantor-collection-selector></lantor-collection-selector>
       <div>
         <p>Tags</p>
         <mat-nav-list *ngIf="similarTags.length > 0">

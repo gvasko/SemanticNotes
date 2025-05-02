@@ -20,10 +20,20 @@ namespace VectorNotes.DomainModel
 
         public async Task<NoteSimilarityResult> FindSimilarNotes(Note originalNote, int maxCount)
         {
-            return await FindSimilarNotes(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount);
+            if (originalNote.NoteCollection == null)
+            {
+                return new NoteSimilarityResult([], 0);
+            }
+
+            return await FindSimilarNotes(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount, originalNote.NoteCollection);
         }
 
-        private Task<NoteSimilarityResult> FindSimilarNotes(Alphabet alphabet, Note originalNote, int maxCount)
+        public async Task<NoteSimilarityResult> FindSimilarNotesInCollection(Note originalNote, int maxCount, NoteCollection targetCollection)
+        {
+            return await FindSimilarNotes(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount, targetCollection);
+        }
+
+        private Task<NoteSimilarityResult> FindSimilarNotes(Alphabet alphabet, Note originalNote, int maxCount, NoteCollection targetCollection)
         {
             return Task.Run(async () =>
             {
@@ -34,7 +44,7 @@ namespace VectorNotes.DomainModel
 
                 IList<NoteSimilarityValue> similarityValues = new List<NoteSimilarityValue>();
 
-                var noteList = await domainUow.GetAllNotesFromSameCollectionAsync(originalNote);
+                var noteList = (await domainUow.GetNoteCollectionByIdAsync(targetCollection.Id))?.Notes ?? [];
 
                 foreach (var note in noteList)
                 {

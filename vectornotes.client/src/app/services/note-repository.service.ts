@@ -191,7 +191,7 @@ export class NoteRepositoryService {
         reject();
         return;
       }
-      this.similarityService.getSimilarNotes(currentNote.id)
+      this.similarityService.getSimilarNotes(this.currentNoteCollectionId, currentNote.id)
         .pipe(take(1))
         .subscribe({
           next: (similarityResult: NoteSimilarityResult) => {

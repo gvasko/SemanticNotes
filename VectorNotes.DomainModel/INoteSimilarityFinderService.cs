@@ -9,6 +9,7 @@ namespace VectorNotes.DomainModel
     public interface INoteSimilarityFinderService
     {
         Task<NoteSimilarityResult> FindSimilarNotes(Note originalNote, int maxCount);
+        Task<NoteSimilarityResult> FindSimilarNotesInCollection(Note originalNote, int maxCount, NoteCollection targetCollection);
         Task<HiDimBipolarVector> GetTextVector(Note note);
     }
 }
