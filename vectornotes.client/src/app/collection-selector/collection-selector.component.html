@@ -6,7 +6,7 @@
     }
   </mat-select>
 </mat-form-field>
-<button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="openEditorToCreateNewCollection()">
+<button *ngIf="allowCreatingCollection" mat-stroked-button class="control-button mdc-text-field--outlined" (click)="openEditorToCreateNewCollection()">
   <span>Create New Collection</span>
   <mat-icon aria-hidden="false" aria-label="Create New Collection" fontIcon="add"></mat-icon>
 </button>

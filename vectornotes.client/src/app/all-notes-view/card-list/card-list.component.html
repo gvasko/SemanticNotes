@@ -1,5 +1,5 @@
 <div class="controls">
-  <lantor-collection-selector></lantor-collection-selector>
+  <lantor-collection-selector [allowCreatingCollection]="true"></lantor-collection-selector>
   <mat-form-field appearance="outline">
     <mat-label>Search</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Filter by title or content" />
