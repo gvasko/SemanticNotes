@@ -34,7 +34,7 @@ export class NoteCardComponent implements OnInit {
   }
 
   moveNote() {
-
+    this.dialogService.openMoveNoteDialog(this.note);
   }
 
   deleteNote() {

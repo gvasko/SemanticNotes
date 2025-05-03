@@ -13,6 +13,7 @@ import { DialogService } from '../services/dialog.service';
 })
 export class CollectionSelectorComponent implements OnInit, OnDestroy {
   @Input() allowCreatingCollection: boolean = false;
+  @Input() setCurrentCollection: boolean = true;
 
   collections: NoteCollectionPreview[] = [];
   selectedCollection: NoteCollectionPreview | undefined = undefined;
@@ -54,6 +55,8 @@ export class CollectionSelectorComponent implements OnInit, OnDestroy {
   }
 
   selectioinChanged() {
+    if (!this.setCurrentCollection) return;
+
     const newId = this.selectedCollection?.id ?? 0;
     this.noteRepositoryService.setCurrentCollection(newId);
   }

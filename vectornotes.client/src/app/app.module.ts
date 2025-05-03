@@ -42,6 +42,7 @@ import { CollectionSelectorComponent } from './collection-selector/collection-se
 import { CreateCollectionDialogComponent } from './create-collection-dialog/create-collection-dialog.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MoveNoteDialogComponent } from './move-note-dialog/move-note-dialog.component';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -107,7 +108,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     NoteMapComponent,
     CollectionSelectorComponent,
     CreateCollectionDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    MoveNoteDialogComponent
   ],
   imports: [
     BrowserModule,

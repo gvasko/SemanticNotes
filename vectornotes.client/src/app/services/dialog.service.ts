@@ -6,6 +6,7 @@ import { CreateTagDialogComponent } from '../create-tag-dialog/create-tag-dialog
 import { CreateCollectionDialogComponent } from '../create-collection-dialog/create-collection-dialog.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ConfirmationData } from '../confirmation-dialog/confirmation-data';
+import { MoveNoteDialogComponent } from '../move-note-dialog/move-note-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,12 @@ export class DialogService {
 
   openCreateCollectionDialog(): MatDialogRef<CreateCollectionDialogComponent, any> {
     return this.dialog.open(CreateCollectionDialogComponent);
+  }
+
+  openMoveNoteDialog(note: Note | undefined = undefined): MatDialogRef<MoveNoteDialogComponent, any> {
+    return this.dialog.open(MoveNoteDialogComponent, {
+      data: note
+    });
   }
 
   openYesNoCancelDialog(title: string, content: string[], action: () => void): MatDialogRef<ConfirmationDialogComponent, any> {

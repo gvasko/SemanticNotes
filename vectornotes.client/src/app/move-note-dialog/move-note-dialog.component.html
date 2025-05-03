@@ -1,0 +1,9 @@
+<h2 id="modal-title" mat-dialog-title>Move Note</h2>
+<mat-dialog-content id="modal-content">
+  <lantor-collection-selector [setCurrentCollection]="false"></lantor-collection-selector>
+  <p>Move note <em>{{currentNoteTitle}}</em> from <em>{{currentNoteCollectionName}}</em> to <em>target</em></p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button id="modal-button-secondary" mat-button mat-dialog-close cdkFocusInitial (click)="onClickNoButton()">No</button>
+  <button id="modal-button-main" mat-button mat-dialog-close (click)="onClickMoveButton()">Move</button>
+</mat-dialog-actions>
