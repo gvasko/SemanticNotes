@@ -1,5 +1,5 @@
 <mat-card class="card">
-  <mat-card-title>{{ note.title }}</mat-card-title>
+  <mat-card-title [matTooltip]="tags">{{ note.title }}</mat-card-title>
   <mat-card-content class="content">{{ note.contentPreview }}</mat-card-content>
   <mat-card-actions>
     <button mat-button (click)="openBrowser()" matTooltip="Open in Browser Mode">

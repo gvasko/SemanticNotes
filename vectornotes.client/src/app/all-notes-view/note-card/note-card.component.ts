@@ -21,6 +21,10 @@ export class NoteCardComponent implements OnInit {
   ngOnInit() {
   }
 
+  get tags(): string {
+    return this.note.tags?.map(tag => `${tag.name}: ${tag.value}`).join("; ") || "";
+  }
+
   openBrowser() {
     this.router.navigate(["/browser", this.note.id]);
   }
