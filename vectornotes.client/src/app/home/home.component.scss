@@ -1,0 +1,13 @@
+article {
+  width: 60%;
+  margin: 0 auto; /* Centers the content horizontally */
+  text-align: justify;
+  max-width: 100%; /* Ensures it doesn't exceed the screen width */
+  padding: 0 10px; /* Adds some padding for narrow screens */
+}
+
+@media (max-width: 768px) {
+  article {
+    width: 90%; /* Adjusts width for smaller screens */
+  }
+}
