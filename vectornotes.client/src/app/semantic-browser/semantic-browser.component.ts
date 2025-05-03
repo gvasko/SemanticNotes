@@ -6,6 +6,7 @@ import { DialogService } from '../services/dialog.service';
 import { Subscription, take } from 'rxjs';
 import { Tag } from '../model/tag';
 import { SimilarNotePreview } from '../model/note-similarity-result';
+import { NoteCollection } from '../model/note-collection';
 
 @Component({
   selector: 'lantor-semantic-browser',
@@ -20,7 +21,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   similarityValues: number[] = [];
 
   currentNote: Note | undefined = undefined;
-  currentNoteCollectionName: string = "";
+  currentNoteCollection: NoteCollection | undefined = undefined;
 
   private noteUpdateSubscription: Subscription | undefined;
   private noteCollectionIdUpdateSubscription: Subscription | undefined;
@@ -67,14 +68,14 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   }
 
   get currentCollectionName(): string {
-    return this.currentNoteCollectionName;
+    return this.currentNoteCollection?.name ?? "undefined";
   }
 
   initCurrentNote(noteId: number) {
     this.noteRepositoryService.getNote(noteId).then((note) => {
       this.currentNote = note;
-      this.currentNoteCollectionName = this.noteRepositoryService.getCollections()
-        .find(c => c.id === note.noteCollectionId)?.name ?? "unknown";
+      this.currentNoteCollection = this.noteRepositoryService.getCollections()
+        .find(c => c.id === note.noteCollectionId);
 
       this.updateSimilarities();
     });
@@ -106,6 +107,13 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
   editButtonClicked() {
     this.dialogService.openQuickNoteEditor(this.currentNote);
+  }
+
+  backButtonClicked() {
+    if (this.currentNoteCollection?.id) {
+      this.noteRepositoryService.setCurrentCollection(this.currentNoteCollection.id);
+    }
+    this.router.navigate(["/notes"]);
   }
 
   createNewTagClicked() {
