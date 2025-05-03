@@ -1,11 +1,20 @@
 <div class="semantic-browser">
   <div class="button-bar">
     <button mat-button [disabled]="!currentNote" (click)="backButtonClicked()">
-      <mat-icon aria-hidden="false" aria-label="Browse" fontIcon="west"></mat-icon>
+      <mat-icon aria-hidden="false" aria-label="Browse" fontIcon="arrow_back"></mat-icon>
     </button>
-    <button mat-button [disabled]="!currentNote" (click)="editButtonClicked()">Edit</button>
-    <button mat-button [disabled]="!currentNote" (click)="deleteButtonClicked()">Delete</button>
-    <button mat-button [disabled]="!currentNote" (click)="createNewTagClicked()">Create Tag</button>
+    <button mat-button [disabled]="!currentNote" (click)="editButtonClicked()">
+      <mat-icon aria-hidden="false" aria-label="Edit" fontIcon="edit"></mat-icon>
+      Edit
+    </button>
+    <button mat-button [disabled]="!currentNote" (click)="deleteButtonClicked()">
+      <mat-icon aria-hidden="false" aria-label="Delete" fontIcon="delete"></mat-icon>
+      Delete
+    </button>
+    <button mat-button [disabled]="!currentNote" (click)="createNewTagClicked()">
+      <mat-icon aria-hidden="false" aria-label="Tag" fontIcon="sell"></mat-icon>
+      Create Tag
+    </button>
   </div>
   <div class="content">
     <div *ngIf="currentNote" class="current-note">

@@ -2,14 +2,17 @@
   <mat-card-title>{{ note.title }}</mat-card-title>
   <mat-card-content class="content">{{ note.contentPreview }}</mat-card-content>
   <mat-card-actions>
-    <button mat-button (click)="openBrowser()">
-      <mat-icon aria-hidden="false" aria-label="Browse" fontIcon="east"></mat-icon>
+    <button mat-button (click)="openBrowser()" matTooltip="Open in Browser Mode">
+      <mat-icon aria-hidden="false" aria-label="Open" fontIcon="open_in_new"></mat-icon>
     </button>
-    <button mat-button (click)="openEditorToEditNote()">
-      <mat-icon aria-hidden="false" aria-label="Browse" fontIcon="edit"></mat-icon>
+    <button mat-button (click)="openEditorToEditNote()" matTooltip="Edit Note">
+      <mat-icon aria-hidden="false" aria-label="Edit" fontIcon="edit"></mat-icon>
     </button>
-    <button mat-button (click)="deleteNote()">
-      <mat-icon aria-hidden="false" aria-label="Browse" fontIcon="delete"></mat-icon>
+    <button mat-button (click)="moveNote()" matTooltip="Move to Another Collection">
+      <mat-icon aria-hidden="false" aria-label="Move" fontIcon="input"></mat-icon>
+    </button>
+    <button mat-button (click)="deleteNote()" matTooltip="Delete Note">
+      <mat-icon aria-hidden="false" aria-label="Delete" fontIcon="delete"></mat-icon>
     </button>
   </mat-card-actions>
 </mat-card>

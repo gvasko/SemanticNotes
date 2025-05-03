@@ -33,6 +33,10 @@ export class NoteCardComponent implements OnInit {
     });
   }
 
+  moveNote() {
+
+  }
+
   deleteNote() {
     if (!this.note?.title) return;
 
