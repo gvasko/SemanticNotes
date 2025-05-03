@@ -121,6 +121,7 @@ namespace VectorNotes.Data.Infrastructure
             // Update the note properties
             existingNote.Title = note.Title;
             existingNote.Content = note.Content;
+            existingNote.NoteCollectionId = note.NoteCollectionId;
 
             // Update the tags
             var existingTags = existingNote.Tags.ToList();

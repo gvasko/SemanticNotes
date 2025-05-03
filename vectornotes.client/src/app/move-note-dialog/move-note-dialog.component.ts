@@ -14,10 +14,12 @@ import { NoteCollectionPreview } from '../model/note-collection-preview';
 export class MoveNoteDialogComponent {
 
   currentCollection: NoteCollectionPreview | undefined = undefined;
+  selectedCollection: NoteCollectionPreview | undefined = undefined;
 
   constructor(@Inject(MAT_DIALOG_DATA) private currentNote: Note | undefined, private noteRepositoryService: NoteRepositoryService) {
     if (this.currentNote?.noteCollectionId) {
       this.currentCollection = this.noteRepositoryService.getCollections().find(c => c.id === this.currentNote!.noteCollectionId);
+      this.selectedCollection = this.currentCollection;
     }
   }
 
@@ -29,8 +31,22 @@ export class MoveNoteDialogComponent {
     return this.currentCollection?.name ?? "undefined";
   }
 
-  onClickMoveButton() {
+  get selectedNoteCollectionName(): string {
+    return this.selectedCollection?.name ?? "undefined";
+  }
 
+  get moveButtonDisabled(): boolean {
+    return this.currentCollection?.id === this.selectedCollection?.id;
+  }
+
+  selectCollection(collection: NoteCollectionPreview) {
+    this.selectedCollection = collection;
+  }
+
+  onClickMoveButton() {
+    if (!this.currentNote || !this.selectedCollection?.id) return;
+
+    this.noteRepositoryService.moveNoteToCollection(this.currentNote, this.selectedCollection.id);
   }
 
   onClickNoButton() {

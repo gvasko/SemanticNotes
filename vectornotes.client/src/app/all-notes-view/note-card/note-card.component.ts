@@ -34,7 +34,11 @@ export class NoteCardComponent implements OnInit {
   }
 
   moveNote() {
-    this.dialogService.openMoveNoteDialog(this.note);
+    if (!this.note?.id) return;
+
+    this.noteRepositoryService.getNote(this.note.id).then((fullNote) => {
+      this.dialogService.openMoveNoteDialog(fullNote);
+    });
   }
 
   deleteNote() {

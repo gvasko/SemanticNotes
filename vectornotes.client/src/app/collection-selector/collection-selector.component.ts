@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { NoteRepositoryService } from '../services/note-repository.service';
 import { NoteCollectionPreview } from '../model/note-collection-preview';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../services/dialog.service';
+import { NoteCollection } from '../model/note-collection';
 
 @Component({
   selector: 'lantor-collection-selector',
@@ -14,6 +15,7 @@ import { DialogService } from '../services/dialog.service';
 export class CollectionSelectorComponent implements OnInit, OnDestroy {
   @Input() allowCreatingCollection: boolean = false;
   @Input() setCurrentCollection: boolean = true;
+  @Output() collectionSelectedEvent = new EventEmitter<NoteCollectionPreview>();
 
   collections: NoteCollectionPreview[] = [];
   selectedCollection: NoteCollectionPreview | undefined = undefined;
@@ -55,6 +57,8 @@ export class CollectionSelectorComponent implements OnInit, OnDestroy {
   }
 
   selectioinChanged() {
+    this.collectionSelectedEvent.emit(this.selectedCollection);
+
     if (!this.setCurrentCollection) return;
 
     const newId = this.selectedCollection?.id ?? 0;
