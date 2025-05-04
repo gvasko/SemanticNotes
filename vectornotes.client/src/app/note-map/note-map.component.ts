@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SVG } from '@svgdotjs/svg.js';
 import { NoteRepositoryService } from '../services/note-repository.service';
 import { SimilarityMatrix } from '../model/similarity-matrix';
@@ -14,7 +14,7 @@ class NotePoint {
   templateUrl: './note-map.component.html',
   styleUrl: './note-map.component.scss'
 })
-export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
+export class NoteMapComponent implements OnInit, OnDestroy {
 
   private similarityMatrix: SimilarityMatrix | undefined = undefined;
   private notePoints: NotePoint[] = [];
@@ -37,11 +37,6 @@ export class NoteMapComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     });
   }
-
-  ngAfterViewInit() {
-    this.init();
-  }
-
 
   ngOnDestroy() {
     this.notesSubscription?.unsubscribe();
