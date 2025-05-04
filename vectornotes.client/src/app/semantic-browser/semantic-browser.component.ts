@@ -21,6 +21,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   similarTags: string[] = [];
   similarityValues: number[] = [];
   collectionTags: string[] = [];
+  selectedTag: Tag | undefined = undefined;
 
   currentNote: Note | undefined = undefined;
   currentNoteCollection: NoteCollectionPreview | undefined = undefined;
@@ -138,14 +139,23 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   deleteTag(tag: Tag) {
     if (!this.currentNote) return;
 
-    this.noteRepositoryService.removeNoteTag(this.currentNote, tag);
+    this.selectedTag = tag;
+
+    this.dialogService.openYesNoDialog("Delete Tag?", [tag.name ?? "Selected tag"], this.dialogDeleteTagYesClicked);
   }
 
-  deleteButtonClicked() {
-    this.dialogService.openYesNoDialog("Delete Note?", [this.currentNote?.title ?? "Current note"], this.deleteNoteClicked);
+  dialogDeleteTagYesClicked = () => {
+    if (!this.currentNote || !this.selectedTag) return;
+
+    this.noteRepositoryService.removeNoteTag(this.currentNote, this.selectedTag);
+    this.selectedTag = undefined;
   }
 
-  deleteNoteClicked = () => {
+  deleteNoteButtonClicked() {
+    this.dialogService.openYesNoDialog("Delete Note?", [this.currentNote?.title ?? "Current note"], this.dialogDeleteNoteYesClicked);
+  }
+
+  dialogDeleteNoteYesClicked = () => {
     if (this.currentNote?.id) {
       this.noteRepositoryService.deleteNote(this.currentNote?.id);
     }

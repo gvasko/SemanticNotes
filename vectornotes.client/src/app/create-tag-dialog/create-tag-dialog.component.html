@@ -3,7 +3,7 @@
   <form class="create-tag-form" [formGroup]="formGroup">
     <mat-form-field class="string-input">
       <mat-label>Tag Name</mat-label>
-      <input matInput value="" type="text" formControlName="name">
+      <input matInput value="" type="text" formControlName="name" cdkFocusInitial>
     </mat-form-field>
     <mat-form-field class="string-input">
       <mat-label>Tag Value</mat-label>
@@ -13,6 +13,6 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close (click)="cancelButtonClicked()" [disabled]="cancelDisabled()">Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="saveButtonClicked()" [disabled]="saveDisabled()">Save</button>
+  <button mat-button [mat-dialog-close]="true" (click)="saveButtonClicked()" [disabled]="saveDisabled()">Save</button>
 </mat-dialog-actions>
 

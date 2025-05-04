@@ -3,12 +3,12 @@
   <form class="create-collection-form" [formGroup]="formGroup">
     <mat-form-field class="string-input">
       <mat-label>Name</mat-label>
-      <input matInput value="" type="text" formControlName="name">
+      <input matInput value="" type="text" formControlName="name" cdkFocusInitial>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close (click)="cancelButtonClicked()" [disabled]="cancelDisabled()">Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="saveButtonClicked()" [disabled]="saveDisabled()">Save</button>
+  <button mat-button [mat-dialog-close]="true" (click)="saveButtonClicked()" [disabled]="saveDisabled()">Save</button>
 </mat-dialog-actions>
 
