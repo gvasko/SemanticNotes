@@ -24,17 +24,6 @@
       <h1>{{currentNote.title}}</h1>
       <p>{{currentNote.content}}</p>
     </div>
-    <div *ngIf="!currentNote" class="taglist">
-      <div class="taglist-left">
-        <lantor-collection-selector></lantor-collection-selector>
-      </div>
-      <div class="taglist-right">
-        <h3>Available Tags in the Collection:</h3>
-        <mat-list role="list">
-          <mat-list-item *ngFor="let tag of currentCollectionTags" role="listitem">{{tag}}</mat-list-item>
-        </mat-list>
-      </div>
-    </div>
     <div *ngIf="currentNote" class="similar-note-list">
       <lantor-collection-selector></lantor-collection-selector>
       <div>
@@ -49,6 +38,17 @@
         <mat-nav-list>
           <mat-list-item *ngFor="let note of similarNotes" (click)="similarNoteClicked(note.id)">[{{note.similarityValue.toFixed(2)}}] {{ note.title }}</mat-list-item>
         </mat-nav-list>
+      </div>
+    </div>
+    <div *ngIf="!currentNote" class="taglist">
+      <div class="taglist-left">
+        <lantor-collection-selector></lantor-collection-selector>
+      </div>
+      <div class="taglist-right">
+        <h3>Available Tags in the Collection:</h3>
+        <mat-list role="list">
+          <mat-list-item *ngFor="let tag of currentCollectionTags" role="listitem">{{tag}}</mat-list-item>
+        </mat-list>
       </div>
     </div>
   </div>

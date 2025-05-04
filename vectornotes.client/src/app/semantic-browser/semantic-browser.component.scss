@@ -1,7 +1,7 @@
 .semantic-browser {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: max-content;
 
   .button-bar {
     display: flex;
@@ -19,6 +19,8 @@
     flex: 1;
     max-height: calc(100vh - 130px);
     overflow: hidden;
+    flex-direction: row; /* Default to row for wide screens */
+    height: max-content;
 
     .current-note {
       flex: 1;
@@ -33,24 +35,8 @@
       }
     }
 
-    .taglist {
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 2fr; /* First column takes 1 part, second column takes 2 parts */
-      gap: 20px; /* Space between columns */
-      align-items: start; /* Align items at the top */
-      text-align: left;
-
-      .taglist-left {
-        grid-column: 1; /* Place in the first column */
-      }
-
-      .taglist-right {
-        grid-column: 2; /* Place in the second column */
-      }
-    }
-
     .similar-note-list {
+      max-height: calc(100vh - 130px);
       width: 300px;
       max-width: 300px;
       min-width: 150px;
@@ -73,5 +59,43 @@
         }
       }
     }
+
+    .taglist {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 2fr; /* First column takes 1 part, second column takes 2 parts */
+      gap: 20px; /* Space between columns */
+      align-items: start; /* Align items at the top */
+      text-align: left;
+
+      .taglist-left {
+        grid-column: 1; /* Place in the first column */
+      }
+
+      .taglist-right {
+        grid-column: 2; /* Place in the second column */
+      }
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column; /* Stack in a column for narrow screens */
+      max-height: max-content;
+
+      .current-note {
+        min-width: unset;
+        max-width: unset;
+        min-height: max-content;
+      }
+
+      .similar-note-list {
+        width: 100%;
+        max-width: unset;
+        min-width: unset;
+        min-height: max-content;
+        border-left: none;
+        border-top: 1px solid #ccc; /* Optional: Add a top border for separation */
+      }
+    }
   }
+
 }
