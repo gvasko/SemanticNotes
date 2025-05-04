@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -229,7 +230,10 @@ namespace VectorNotes.DomainModel
 
         private async Task<User> GetInitializedCurrentUserAsync()
         {
+            Log.Debug("Getting user info and ensuring it is initialized.");
             var user = await userService.GetCurrentUserAsync();
+
+            Log.Information("User is connected: {email}", user.Email);
 
             // ensure default alphabet
             var allAbc = await basicUoW.GetAllAlphabetsAsync();
@@ -252,7 +256,8 @@ namespace VectorNotes.DomainModel
                     Name = "Default",
                     OwnerId = user.Id
                 };
-                await CreateNoteCollectionAsync(defaultCollection);
+
+                await basicUoW.CreateNoteCollectionAsync(defaultCollection);
             }
 
             return user;
