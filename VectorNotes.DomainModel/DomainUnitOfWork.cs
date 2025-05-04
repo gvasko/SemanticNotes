@@ -230,6 +230,16 @@ namespace VectorNotes.DomainModel
 
         private async Task<User> GetInitializedCurrentUserAsync()
         {
+            return await GetInitializedCurrentUserAsync(userService, basicUoW);
+        }
+
+        /// <summary>
+        /// The method is static to ensure it cannot call instance methods, 
+        /// because they will call it.
+        /// </summary>
+        /// <returns></returns>
+        private static async Task<User> GetInitializedCurrentUserAsync(IUserService userService, IBasicUnitOfWork basicUoW)
+        {
             Log.Debug("Getting user info and ensuring it is initialized.");
             var user = await userService.GetCurrentUserAsync();
 
@@ -242,7 +252,10 @@ namespace VectorNotes.DomainModel
             if (foundAbc == null)
             {
                 var defaultAlphabet = new Alphabet("Default", 5024, new RandomVectorFactory());
-                await CreateAlphabetAsync(defaultAlphabet);
+                defaultAlphabet.OwnerId = user.Id;
+                defaultAlphabet.Owner = null;
+
+                await basicUoW.CreateAlphabetAsync(defaultAlphabet);
             }
 
             // default collection
