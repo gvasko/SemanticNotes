@@ -35,7 +35,7 @@ export class NoteRepositoryService {
 
   get NoteCollectionIdSubject(): Subject<number> { return this.noteCollectionIdSubject; }
 
-  get CurrentNoteCollection(): NoteCollection | undefined { return this.collectionsPreview.find(cp => cp.id === this.currentNoteCollectionId) }
+  get CurrentNoteCollection(): NoteCollectionPreview | undefined { return this.collectionsPreview.find(cp => cp.id === this.currentNoteCollectionId) }
 
   initFromNote(noteId: number): Promise<void> {
     return new Promise((resolve, reject) => {

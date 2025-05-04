@@ -29,7 +29,24 @@
       text-align: left;
 
       .collection-name {
-          font-size: small;
+        font-size: small;
+      }
+    }
+
+    .taglist {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 2fr; /* First column takes 1 part, second column takes 2 parts */
+      gap: 20px; /* Space between columns */
+      align-items: start; /* Align items at the top */
+      text-align: left;
+
+      .taglist-left {
+        grid-column: 1; /* Place in the first column */
+      }
+
+      .taglist-right {
+        grid-column: 2; /* Place in the second column */
       }
     }
 

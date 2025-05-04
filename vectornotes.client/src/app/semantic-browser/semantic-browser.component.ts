@@ -7,6 +7,7 @@ import { Subscription, take } from 'rxjs';
 import { Tag } from '../model/tag';
 import { SimilarNotePreview } from '../model/note-similarity-result';
 import { NoteCollection } from '../model/note-collection';
+import { NoteCollectionPreview } from '../model/note-collection-preview';
 
 @Component({
   selector: 'lantor-semantic-browser',
@@ -19,10 +20,12 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   similarNotes: SimilarNotePreview[] = [];
   similarTags: string[] = [];
   similarityValues: number[] = [];
+  collectionTags: string[] = [];
 
   currentNote: Note | undefined = undefined;
-  currentNoteCollection: NoteCollection | undefined = undefined;
+  currentNoteCollection: NoteCollectionPreview | undefined = undefined;
 
+  private notesSubscription: Subscription | undefined;
   private noteUpdateSubscription: Subscription | undefined;
   private noteCollectionIdUpdateSubscription: Subscription | undefined;
   private routerSubscription: Subscription | undefined;
@@ -47,9 +50,16 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
     const noteIdParam = this.route.snapshot.paramMap.get("id");
     const noteId = noteIdParam === null ? 0 : +noteIdParam;
-    this.noteRepositoryService.initFromNote(noteId).then(() => {
-      this.initCurrentNote(noteId);
-    });
+    if (noteId) {
+      this.noteRepositoryService.initFromNote(noteId).then(() => {
+        this.initCurrentNote(noteId);
+      });
+    } else {
+      this.notesSubscription = this.noteRepositoryService.NotesSubject.subscribe((notes) => {
+        const tags = notes?.flatMap(note => note.tags ?? []) ?? [];
+        this.collectionTags = Array.from(new Set(tags.map(t => `${t.name}: ${t.value}`)));
+      });
+    }
 
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (!(event instanceof NavigationEnd)) {
@@ -62,6 +72,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.notesSubscription?.unsubscribe();
     this.noteUpdateSubscription?.unsubscribe();
     this.noteCollectionIdUpdateSubscription?.unsubscribe();
     this.routerSubscription?.unsubscribe();
@@ -69,6 +80,10 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
   get currentCollectionName(): string {
     return this.currentNoteCollection?.name ?? "undefined";
+  }
+
+  get currentCollectionTags(): string[] {
+    return this.collectionTags;
   }
 
   initCurrentNote(noteId: number) {
