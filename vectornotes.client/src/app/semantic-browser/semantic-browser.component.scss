@@ -19,7 +19,7 @@
     flex: 1;
     max-height: calc(100vh - 130px);
     overflow: hidden;
-    flex-direction: row; /* Default to row for wide screens */
+    flex-direction: row;
     height: max-content;
 
     .current-note {
@@ -62,23 +62,23 @@
 
     .taglist {
       padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 2fr; /* First column takes 1 part, second column takes 2 parts */
-      gap: 20px; /* Space between columns */
-      align-items: start; /* Align items at the top */
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: start;
       text-align: left;
 
       .taglist-left {
-        grid-column: 1; /* Place in the first column */
+        flex: 1;
       }
 
       .taglist-right {
-        grid-column: 2; /* Place in the second column */
+        flex: 2;
       }
     }
 
     @media (max-width: 768px) {
-      flex-direction: column; /* Stack in a column for narrow screens */
+      flex-direction: column;
       max-height: max-content;
 
       .current-note {
@@ -88,14 +88,17 @@
       }
 
       .similar-note-list {
-        width: 100%;
+        width: auto;
         max-width: unset;
         min-width: unset;
         min-height: max-content;
         border-left: none;
         border-top: 1px solid #ccc; /* Optional: Add a top border for separation */
       }
+
+      .taglist {
+        flex-direction: column;
+      }
     }
   }
-
 }
