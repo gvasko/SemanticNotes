@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { SVG } from '@svgdotjs/svg.js';
 import { NoteRepositoryService } from '../services/note-repository.service';
 import { SimilarityMatrix } from '../model/similarity-matrix';
@@ -43,6 +43,11 @@ export class NoteMapComponent implements OnInit, OnDestroy {
     this.stopAnimation();
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.redraw();
+  }
+
   init(): Promise<void> {
     return new Promise((resolve, reject) => {
       const collectionId = this.noteRepositoryService.CurrentNoteCollection?.id ?? 0;
@@ -62,6 +67,7 @@ export class NoteMapComponent implements OnInit, OnDestroy {
   }
 
   redraw() {
+    this.initSVG();
     this.needsRedraw = true;
     this.frame = 0;
     if (this.animationFrameId === 0) {
@@ -88,9 +94,11 @@ export class NoteMapComponent implements OnInit, OnDestroy {
     const container = document.getElementById('svgContainer');
     if (container) {
       const svgWidth = container.clientWidth;
-      const svgHeight = svgWidth * 0.5;
+      const svgHeight = container.clientHeight;
       if (!this.draw) {
         this.draw = SVG().addTo(container).size(svgWidth, svgHeight);
+      } else {
+        this.draw.size(svgWidth, svgHeight);
       }
     }
   }
