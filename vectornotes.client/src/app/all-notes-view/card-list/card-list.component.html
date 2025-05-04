@@ -4,8 +4,8 @@
     <mat-label>Search</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Filter by title or content" />
   </mat-form-field>
-  <button mat-stroked-button class="control-button mdc-text-field--outlined" (click)="openEditorToCreateNewNote()">
-    <span>Add Note</span>
+  <button mat-stroked-button matTooltip="Create New Note" class="control-button mdc-text-field--outlined" (click)="openEditorToCreateNewNote()">
+    <span>Note</span>
     <mat-icon aria-hidden="false" aria-label="Add new note" fontIcon="add"></mat-icon>
   </button>
 </div>
