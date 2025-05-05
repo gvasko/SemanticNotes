@@ -23,6 +23,7 @@ export class NoteRepositoryService {
 
   private notesPreview: NotePreview[] = [];
   private collectionsPreview: NoteCollectionPreview[] = [];
+  private referenceCollectionPreview: NoteCollectionPreview | undefined = undefined;
 
   private notesSubject = new Subject<NotePreview[]>();
   private noteUpdateSubject = new Subject<Note>();
@@ -37,17 +38,26 @@ export class NoteRepositoryService {
 
   get CurrentNoteCollection(): NoteCollectionPreview | undefined { return this.collectionsPreview.find(cp => cp.id === this.currentNoteCollectionId) }
 
+  get referenceCollection(): NoteCollectionPreview | undefined {
+    return this.referenceCollectionPreview;
+  }
+
+  set referenceCollection(newRef: NoteCollectionPreview | undefined) {
+    this.referenceCollectionPreview = newRef;
+  }
+
   initFromNote(noteId: number): Promise<void> {
     return new Promise((resolve, reject) => {
       this.notesApiService.getById(noteId).subscribe({
         next: (note: Note) => {
           // TODO: optimize, content is not needed here
-          if (!note.noteCollectionId) {
+          let collectionId = this.referenceCollection?.id ?? note.noteCollectionId;
+          if (!collectionId) {
             console.log("Cannot init notes");
             reject("Cannot init notes");
             return;
           }
-          this.initCollection(note.noteCollectionId).then(resolve).catch(reject);
+          this.initCollection(collectionId).then(resolve).catch(reject);
         },
         error: (error) => {
           reject(error);

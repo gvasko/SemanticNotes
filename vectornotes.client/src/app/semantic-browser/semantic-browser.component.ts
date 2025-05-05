@@ -87,6 +87,10 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
     return this.collectionTags;
   }
 
+  get hasReferenceCollection(): boolean {
+    return !!this.noteRepositoryService.referenceCollection;
+  }
+
   initCurrentNote(noteId: number) {
     this.noteRepositoryService.getNote(noteId).then((note) => {
       this.currentNote = note;
@@ -160,5 +164,13 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
       this.noteRepositoryService.deleteNote(this.currentNote?.id);
     }
     this.router.navigate(["/notes"]);
+  }
+
+  useCurrentCollectionAsReference(checked: boolean) {
+    if (checked) {
+      this.noteRepositoryService.referenceCollection = this.currentNoteCollection;
+    } else {
+      this.noteRepositoryService.referenceCollection = undefined;
+    }
   }
 }

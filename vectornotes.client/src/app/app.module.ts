@@ -22,6 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SemanticBrowserComponent } from './semantic-browser/semantic-browser.component';
@@ -130,6 +131,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MatTabsModule,
     MatSelectModule,
     MatTooltipModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     HttpClientModule,
     MsalModule

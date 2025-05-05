@@ -51,6 +51,14 @@
         font-weight: bold;
       }
 
+      .remember-checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start; /* Aligns the checkbox to the left */
+        margin: 0; /* Removes any default margin */
+        padding: 0; /* Removes any default padding */
+      }
+
       mat-nav-list {
         padding: 0;
 

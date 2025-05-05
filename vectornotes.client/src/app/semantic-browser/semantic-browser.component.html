@@ -26,6 +26,7 @@
     </div>
     <div *ngIf="currentNote" class="similar-note-list">
       <lantor-collection-selector></lantor-collection-selector>
+      <mat-checkbox class="remember-checkbox" [checked]="hasReferenceCollection" (change)="useCurrentCollectionAsReference($event.checked)">Remember collection</mat-checkbox>
       <div>
         <p>Tags</p>
         <mat-nav-list *ngIf="similarTags.length > 0">
