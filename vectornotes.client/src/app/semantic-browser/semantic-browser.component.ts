@@ -168,7 +168,7 @@ export class SemanticBrowserComponent implements OnInit, OnDestroy {
 
   useCurrentCollectionAsReference(checked: boolean) {
     if (checked) {
-      this.noteRepositoryService.referenceCollection = this.currentNoteCollection;
+      this.noteRepositoryService.referenceCollection = this.noteRepositoryService.CurrentNoteCollection;
     } else {
       this.noteRepositoryService.referenceCollection = undefined;
     }
