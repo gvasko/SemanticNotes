@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,52 +26,93 @@ namespace VectorNotes.DomainModel
                 return new NoteSimilarityResult([], 0);
             }
 
-            return await FindSimilarNotes(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount, originalNote.NoteCollection);
+            return await FindSimilarNotesAsync(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount, originalNote.NoteCollection);
         }
 
         public async Task<NoteSimilarityResult> FindSimilarNotesInCollection(Note originalNote, int maxCount, NoteCollection targetCollection)
         {
-            return await FindSimilarNotes(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount, targetCollection);
+            return await FindSimilarNotesAsync(await domainUow.GetDefaultAlphabetAsync(), originalNote, maxCount, targetCollection);
         }
 
-        private Task<NoteSimilarityResult> FindSimilarNotes(Alphabet alphabet, Note originalNote, int maxCount, NoteCollection targetCollection)
+        private async Task<NoteSimilarityResult> FindSimilarNotesAsync(Alphabet alphabet, Note originalNote, int maxCount, NoteCollection targetCollection)
         {
-            return Task.Run(async () =>
+            Stopwatch stopWatch = new();
+            stopWatch.Start();
+
+            var originalTextVector = await EnsureTextVectorFromCache(alphabet, originalNote);
+
+            ConcurrentBag<NoteSimilarityValue> similarityValues = new();
+
+            var noteList = (await domainUow.GetNoteCollectionByIdAsync(targetCollection.Id))?.Notes ?? [];
+
+            var textVectors = await EnsureTextVectorsFromCache(alphabet, noteList);
+
+            Log.Debug("Parallel work started...");
+            Parallel.ForEach(noteList, note =>
             {
-                Stopwatch stopWatch = new();
-                stopWatch.Start();
-
-                var originalTextVector = await EnsureTextVectorFromCache(alphabet, originalNote);
-
-                IList<NoteSimilarityValue> similarityValues = new List<NoteSimilarityValue>();
-
-                var noteList = (await domainUow.GetNoteCollectionByIdAsync(targetCollection.Id))?.Notes ?? [];
-
-                foreach (var note in noteList)
+                if (note.Id == originalNote.Id)
                 {
-                    if (note.Id == originalNote.Id)
-                    {
-                        continue;
-                    }
-
-                    HiDimBipolarVector textVector = await EnsureTextVectorFromCache(alphabet, note);
-                    var similarity = textVector.Similarity(originalTextVector);
-                    similarityValues.Add(new NoteSimilarityValue(note.Id, similarity));
-                    Log.Debug("Text vector similarity for '{note}' calculated.", note.Title);
+                    return;
                 }
 
-                Log.Debug("Similarity results sorted.");
-                stopWatch.Stop();
-                Log.Debug("Found in {elapsed} ms.", stopWatch.ElapsedMilliseconds);
-
-                var similarityValuesArray = similarityValues.ToArray();
-                var fullSimilarityResult = new NoteSimilarityResult(similarityValuesArray, stopWatch.ElapsedMilliseconds, GetSignificantCount(similarityValuesArray));
-                var firstFewSimilarityResult = new NoteSimilarityResult(
-                    fullSimilarityResult.SimilarityValues.Take(maxCount).ToArray(),
-                    fullSimilarityResult.DurationMillisec,
-                    Math.Min(fullSimilarityResult.SignificantCount, maxCount));
-                return firstFewSimilarityResult;
+                Log.Debug("Text vector similarity for '{note}' ...", note.Title);
+                HiDimBipolarVector textVector = textVectors[note.Id];
+                var similarity = textVector.Similarity(originalTextVector);
+                similarityValues.Add(new NoteSimilarityValue(note.Id, similarity));
+                Log.Debug("Text vector similarity for '{note}' calculated.", note.Title);
             });
+            Log.Debug("Parallel work ended...");
+
+            Log.Debug("Similarity results sorted.");
+            stopWatch.Stop();
+            Log.Debug("Found in {elapsed} ms.", stopWatch.ElapsedMilliseconds);
+
+            var similarityValuesArray = similarityValues.ToArray();
+            var fullSimilarityResult = new NoteSimilarityResult(similarityValuesArray, stopWatch.ElapsedMilliseconds, GetSignificantCount(similarityValuesArray));
+            var firstFewSimilarityResult = new NoteSimilarityResult(
+                fullSimilarityResult.SimilarityValues.Take(maxCount).ToArray(),
+                fullSimilarityResult.DurationMillisec,
+                Math.Min(fullSimilarityResult.SignificantCount, maxCount));
+            return firstFewSimilarityResult;
+        }
+
+        private async Task<IDictionary<int, HiDimBipolarVector>> EnsureTextVectorsFromCache(Alphabet alphabet, IList<Note> noteList)
+        {
+            Dictionary<int, HiDimBipolarVector> cachedVectors = new();
+
+            foreach (var note in noteList)
+            {
+                var textVector = (await domainUow.GetTextVectorFromCacheAsync(note, alphabet))?.Vector;
+                if (textVector != null)
+                {
+                    cachedVectors.Add(note.Id, textVector);
+                }
+            }
+
+            var notYetCached = noteList.Where(note => !cachedVectors.ContainsKey(note.Id));
+
+            Log.Debug("Parallel work started...");
+            ConcurrentDictionary<int, HiDimBipolarVector> newVectors = new();
+            Parallel.ForEach(notYetCached, note =>
+            {
+                Log.Debug("Text vector for '{note}' not found in cache. Calculating...", note.Title);
+                var newTextVector = textVectorBuilder.BuildTextVector(alphabet, note.Content);
+                newVectors.TryAdd(note.Id, newTextVector);
+                Log.Debug("Text vector for '{note}' generated.", note.Title);
+            });
+            Log.Debug("Parallel work ended...");
+
+            foreach (var newVector in newVectors)
+            {
+                var note = noteList.First(n => n.Id == newVector.Key);
+                var textVector = newVector.Value;
+                await domainUow.CreateOrUpdateTextVectorInCacheAsync(note, alphabet, textVector);
+                cachedVectors.Add(note.Id, textVector);
+                Log.Debug("Text vector for '{note}' stored in cache.", note.Title);
+            }
+            await domainUow.SaveAsync();
+
+            return cachedVectors;
         }
 
         private async Task<HiDimBipolarVector> EnsureTextVectorFromCache(Alphabet alphabet, Note note)
